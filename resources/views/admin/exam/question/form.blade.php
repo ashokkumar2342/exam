@@ -23,7 +23,7 @@
               	<div class="col-md-3">
               	  <div class="form-group">
               	      {{ Form::label('class','Class',['class'=>' control-label']) }}  
-              	      <select class="form-control"  multiselect-form="true"  name="class"> 
+              	      <select class="form-control"  multiselect-form="true"  name="class" id="class"> 
               	        <option value="" selected="" disabled>Select Class</option>
               	        @foreach ($classes as $key=>$value)
               	           <option value="{{ $key }}">{{ $value }}</option>
@@ -34,7 +34,7 @@
                 <div class="col-md-3">
                   <div class="form-group">
                       {{ Form::label('class','Subject',['class'=>' control-label']) }}  
-                      <select class="form-control"  multiselect-form="true"  name="subject"  onchange="callAjax(this,'{{route('admin.section.selectBox')}}'+'?id='+this.value,'section_list')" > 
+                      <select class="form-control"  multiselect-form="true"  name="subject" id="subject" onchange="callAjax(this,'{{route('admin.section.selectBox')}}'+'?id='+this.value,'section_list')" > 
                         <option value="" selected="" disabled>Select Subject</option>
                         @foreach ($subjects as $subject)
                            <option value="{{ $subject->id }}">{{ $subject->name }}</option>
@@ -45,27 +45,37 @@
                 <div class="col-md-6" id="section_list">
                 	  <div class="form-group" >
                 	  <label>Section</label>
-                	 <select name="section" class="form-control">
+                	   <select name="section" class="form-control">
                 	 	 
                 	 </select>
                 	</div>
+                </div> 
+                <div class="col-md-9" id="topic_select_box">
+                    <div class="form-group" >
+                        <label>Topic</label>
+                        <select name="topic" class="form-control"> 
+                        </select>
+                    </div> 
                 </div>
                 <div class="col-md-3">
-                  <div class="form-group">
-                      {{ Form::label('code','Code',['class'=>' control-label']) }}  
-                      <input type="text" name="code" id="code" class="form-control">
+                  <div class="form-group" >
+                      <label>Question Type</label>
+                      <select name="question_type" editor_question="true" id="question_type" class="form-control" onchange="callAjax(this,'{{ route('admin.question.type') }}','question_type_result')"> 
+                        <option value="" selected disabled>Select Question Type</option>
+                        @foreach ($questionTypes  as $questionType)
+                           <option value="{{ $questionType->id }}">{{ $questionType->name }}</option>
+                           
+                        @endforeach
+                      </select>
                   </div> 
                 </div>
-                <div class="col-md-9">
-                  <div class="form-group">
-                      {{ Form::label('topic','Topic',['class'=>' control-label']) }}  
-                      <input type="text" name="topic" id="topic" class="form-control">
-                  </div> 
-                </div>
-                <div class="col-lg-12 text-center">
-                 	<div class="form-group"> 
-                 	    <input type="submit" name="submit" id="submit" class="btn btn-success">
-                 	</div> 
+                <div class="col-lg-12" id="question_type_result">
+                  
+                 </div> 
+                 <div class="col-lg-12 text-center">
+                    <div class="form-group"> 
+                        <input type="submit" name="submit" id="submit" class="btn btn-success">
+                    </div> 
                  </div> 
               </div> 
               </form> 

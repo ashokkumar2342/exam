@@ -123,6 +123,9 @@
  <script src={!! asset('admin_asset/dist/js/summernote.js?ver=1') !!}></script>
  <script src={!! asset('admin_asset/dist/js/croppie.js?ver=1') !!}></script>
  <script src={!! asset('admin_asset/dist/js/loader.js') !!}></script>
+ <script>window.MathJax = { MathML: { extensions: ["mml3.js", "content-mathml.js"]}};</script>
+ <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=MML_HTMLorMML"></script>
+  <script src={!! asset('admin_asset/ckeditor4/ckeditor.js')!!}> 
    
 {{--     <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script> --}}
 
