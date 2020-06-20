@@ -141,10 +141,10 @@ function callAjax(obj,url,divId,callback){
 			     { name: 'basicstyles', items : [ 'Bold','Italic','Underline'] },
 			     { name: 'paragraph', items : [ 'JustifyLeft','JustifyCenter','JustifyRight'] }
 			     ];
-			 CKEDITOR.config.height = '300px';
+			 CKEDITOR.replace('editor_1', { height: 100 });
 			 CKEDITOR.plugins.addExternal('divarea', '../extraplugins/divarea/', 'plugin.js');
 			 
-			 CKEDITOR.replace('editor_question', {
+			 CKEDITOR.replace('editor_1', {
 			      extraPlugins: 'base64image,divarea,ckeditor_wiris',
 			      language: 'en'
 			 });

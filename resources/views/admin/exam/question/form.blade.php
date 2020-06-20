@@ -15,7 +15,7 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-              <form action="{{ route('admin.topic.add') }}" method="post"  class="add_form" accept-charset="utf-8">
+              <form action="{{ route('admin.question.store') }}" method="post"  class="add_form" accept-charset="utf-8" id="question_form">
                {{ csrf_field() }} 
               
                {{-- {!! Form::open(['route'=>@($sectionType)?['',$sectionType->id]:'admin.section.add','class'=>"form-horizontal" ]) !!} --}}
@@ -50,7 +50,7 @@
                 	 </select>
                 	</div>
                 </div> 
-                <div class="col-md-9" id="topic_select_box">
+                <div class="col-md-6" id="topic_select_box">
                     <div class="form-group" >
                         <label>Topic</label>
                         <select name="topic" class="form-control"> 
@@ -59,8 +59,20 @@
                 </div>
                 <div class="col-md-3">
                   <div class="form-group" >
+                      <label>Difficulty Level</label>
+                      <select name="difficulty_level"  id="difficulty_level" class="form-control"> 
+                        <option value="" selected disabled>Select Difficulty Level</option>
+                        @foreach ($difficultyLevels  as $difficultyLevel)
+                           <option value="{{ $difficultyLevel->id }}">{{ $difficultyLevel->name }}</option>
+                           
+                        @endforeach
+                      </select>
+                  </div> 
+                </div>  
+                <div class="col-md-3">
+                  <div class="form-group" >
                       <label>Question Type</label>
-                      <select name="question_type" editor_question="true" id="question_type" class="form-control" onchange="callAjax(this,'{{ route('admin.question.type') }}','question_type_result')"> 
+                      <select name="question_type" button-click="add_field_button,add_field_button,add_field_button" editor_question="true" id="question_type" class="form-control" onchange="callAjax(this,'{{ route('admin.question.type') }}','question_type_result')"> 
                         <option value="" selected disabled>Select Question Type</option>
                         @foreach ($questionTypes  as $questionType)
                            <option value="{{ $questionType->id }}">{{ $questionType->name }}</option>
@@ -69,12 +81,18 @@
                       </select>
                   </div> 
                 </div>
+                <div class="col-md-12">
+                  <div class="form-group" >
+                      <label>Video Url</label>
+                      <input type="text" name="video_url" class="form-control">
+                  </div> 
+                </div>
                 <div class="col-lg-12" id="question_type_result">
                   
                  </div> 
                  <div class="col-lg-12 text-center">
                     <div class="form-group"> 
-                        <input type="submit" name="submit" id="submit" class="btn btn-success">
+                        <input type="submit" name="submit"  id="submit" class="btn btn-success">
                     </div> 
                  </div> 
               </div> 
@@ -88,33 +106,10 @@
            
 
           <!-- Trigger the modal with a button -->
+ 
+ 
 
-<!-- Modal -->
-<div id="add_section" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-
-    <!-- Modal content-->
-    <div class="modal-content">
-   
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">@if(@$sectionType) Update @else Add @endif Section</h4>
-    </div>
-      <div class="modal-body">
-        <div class="col-md-12">             
-            <div class="form-group">
-                {{ Form::label('class','Class',['class'=>' control-label']) }}                         
-                {!! Form::select('class',$subjects, null, ['class'=>'form-control','placeholder'=>'---choose Class---','required']) !!}
-                <p class="text-danger">{{ $errors->first('class') }}</p>
-            </div> 
-                  
-      </div> 
-   
-   
-       
-
-  </div>
-</div>
+    
 
     </section>
     <!-- /.content -->
@@ -128,5 +123,7 @@
   
  </script>
  <script type="text/javascript" src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
- 
+ <script>
+   
+ </script>
 @endpush

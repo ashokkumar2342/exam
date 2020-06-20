@@ -242,7 +242,9 @@ function callJqueryDefault(divId){
 	});
 });
 }
-callJqueryDefault('body_id');
+  setTimeout(function(){ callJqueryDefault('body_id'); },9000);
+
+
 
 function format(value) {
      return '<div>' + value + '</div>';
