@@ -1,5 +1,5 @@
  <div class="form-group">
-  <label>Section</label>
+  <label>Topic</label>
  <select name="topic" id="topic" class="form-control">
  	<option value="" selected="" disabled>Select Topic</option> 
  	@foreach ($topics as $topic)
