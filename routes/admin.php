@@ -224,8 +224,21 @@ Route::group(['middleware' => 'admin'], function() {
          	Route::get('clear-all','Notification\NotificationController@clearAll')->name('notification.clear.all'); 
          	Route::get('clear/{id}','Notification\NotificationController@noficationClear')->name('notification.clear'); 
          	Route::get('read/{id}','Notification\NotificationController@readStatus')->name('notification.read.status'); 	 
- 		});  
- 		 Route::group(['prefix' => 'question'], function() {       
+ 		});  		
+ 		 Route::group(['prefix' => 'DifficultyLevel'], function() {       
+         	Route::get('/','Exam\DifficultyLevelController@index')->name('admin.exam.DifficultyLevel');
+         	Route::post('store/{id?}','Exam\DifficultyLevelController@store')->name('admin.exam.DifficultyLevel.store');
+         	Route::get('edit/{id?}','Exam\DifficultyLevelController@edit')->name('admin.exam.DifficultyLevel.edit');
+         	 
+         	     
+ 		});
+ 		 Route::group(['prefix' => 'QuestionType'], function() {       
+         	Route::get('/','Exam\QuestionTypeController@index')->name('admin.exam.QuestionType');
+         	Route::post('store/{id?}','Exam\QuestionTypeController@store')->name('admin.exam.QuestionType.store');
+         	Route::get('edit/{id}','Exam\QuestionTypeController@edit')->name('admin.exam.QuestionType.edit');
+         	     
+ 		});
+ 		Route::group(['prefix' => 'question'], function() {       
          	Route::get('add','Exam\QuestionController@questionForm')->name('admin.question.add');
          	Route::get('topic-add-form','Exam\QuestionController@topicForm')->name('admin.topic.list');    
          	Route::get('topic-select-box','Exam\QuestionController@topicSelectBox')->name('admin.topic.select.box');
