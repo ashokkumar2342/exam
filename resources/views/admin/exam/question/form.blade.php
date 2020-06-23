@@ -1,9 +1,6 @@
 @extends('admin.layout.base')
 @push('links')
-   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-   <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.min.css">
-    
+ 
 @endpush
 @section('body')
     <section class="content">
@@ -15,10 +12,8 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-              <form action="{{ route('admin.question.store') }}" method="post"  class="add_form" accept-charset="utf-8" id="question_form">
+              <form action="{{ route('admin.question.store') }}" select-triger="question_type" method="post"  class="add_form" accept-charset="utf-8" id="question_form" no-reset="true">
                {{ csrf_field() }} 
-              
-               {{-- {!! Form::open(['route'=>@($sectionType)?['',$sectionType->id]:'admin.section.add','class'=>"form-horizontal" ]) !!} --}}
               <div class="row">
               	<div class="col-md-3">
               	  <div class="form-group">
@@ -81,11 +76,31 @@
                       </select>
                   </div> 
                 </div>
-                <div class="col-md-12">
+                <div class="col-md-8">
+                  <div class="form-group" >
+                      <label>Title</label>
+                      <input type="text" name="title" class="form-control">
+                  </div> 
+                </div>
+                <div class="col-md-4">
                   <div class="form-group" >
                       <label>Video Url</label>
                       <input type="text" name="video_url" class="form-control">
                   </div> 
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group" >
+                      <label>Question</label> 
+                      <textarea class="ckeditor" id="question" name="question"></textarea>
+                  </div> 
+                  
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group" >
+                      <label>Solution</label> 
+                      <textarea class="ckeditor" id="solution" name="solution"></textarea>
+                  </div> 
+                  
                 </div>
                 <div class="col-lg-12" id="question_type_result">
                   
@@ -124,6 +139,27 @@
  </script>
  <script type="text/javascript" src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
  <script>
+   CKEDITOR.config.toolbar_Full =
+       [
+       { name: 'document', items : [ 'Source'] },
+       { name: 'clipboard', items : [ 'Cut','Copy','Paste','-','Undo','Redo' ] },
+       { name: 'editing', items : [ 'Find'] },
+       { name: 'basicstyles', items : [ 'Bold','Italic','Underline'] },
+       { name: 'paragraph', items : [ 'JustifyLeft','JustifyCenter','JustifyRight'] }
+       ];
+   CKEDITOR.replace('question', { height: 200 });
+   CKEDITOR.plugins.addExternal('divarea', '../extraplugins/divarea/', 'plugin.js');
    
+   CKEDITOR.replace('question', {
+        extraPlugins: 'base64image,divarea,ckeditor_wiris',
+        language: 'en'
+   });
+  CKEDITOR.replace('solution', { height: 200 });
+   CKEDITOR.plugins.addExternal('divarea', '../extraplugins/divarea/', 'plugin.js');
+   
+   CKEDITOR.replace('solution', {
+        extraPlugins: 'base64image,divarea,ckeditor_wiris',
+        language: 'en'
+   });
  </script>
 @endpush

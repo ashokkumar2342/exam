@@ -56,7 +56,7 @@ class QuestionController extends Controller
         }
     }
     public function questionStore(Request $request)
-    {
+    { 
         try {
           $rules=[
            'class' => 'required',             
@@ -65,6 +65,8 @@ class QuestionController extends Controller
            'topic' => 'required',  
            'difficulty_level' => 'required',  
            'question_type' => 'required',  
+           'title' => 'required',  
+           'question' => 'required',  
            'correct_answer' => 'required',  
            "option.*"  => "required",  
           ]; 
@@ -82,25 +84,40 @@ class QuestionController extends Controller
           $question->subject_id=$request->subject; 
           $question->section_id=$request->section; 
           $question->topic_id=$request->topic; 
-          $question->details=null; 
-          $question->answer=$request->correct_answer; 
+          $question->details=$request->question; 
+          if ($request->question_type==1) {
+            $question->answer=$request->correct_answer;   
+          }elseif ($request->question_type==2) {
+            $question->answer=implode(',', $request->correct_answer); 
+          }
+          
+          $question->title=$request->title; 
+          $question->solution=$request->solution; 
           $question->video_url=$request->video_url; 
           $question->difficulty_level_id=$request->difficulty_level; 
           $question->created_by=Auth::guard('admin')->user()->id; 
           $question->save(); 
           if (!empty($question->id)) {
             
+            
             foreach ($request->option as $key => $value) {
               $option =new Option();
               $correct_answer =0;
-              if ($key+1 ==$request->correct_answer) {
-                $correct_answer =1;
+              if ($request->question_type==1) { 
+                    if ($key+1 ==$request->correct_answer) {
+                      $correct_answer =1;
+                    } 
+              }elseif($request->question_type==2){
+                if (in_array($key+1, $request->correct_answer)) {
+                  $correct_answer =1;
+                }
               }
+              
               $option->question_id=$question->id;
               $option->description=$value;
               $option->is_correct_ans=$correct_answer;
-              $option->positive_marks=0;
-              $option->negative_marks=0;
+              $option->positive_marks=$request->positive_marking[$key];
+              $option->negative_marks=$request->nagative_marking[$key];
               $option->save();
             }
             
