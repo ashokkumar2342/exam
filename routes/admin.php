@@ -241,6 +241,8 @@ Route::group(['middleware' => 'admin'], function() {
  		Route::group(['prefix' => 'question'], function() {       
          	Route::get('add','Exam\QuestionController@questionForm')->name('admin.question.add');
          	Route::post('store','Exam\QuestionController@questionStore')->name('admin.question.store');
+         	Route::get('show','Exam\QuestionController@show')->name('admin.question.show');
+         	Route::post('show-table','Exam\QuestionController@showTable')->name('admin.question.show.table');
          	Route::get('topic-add-form','Exam\QuestionController@topicForm')->name('admin.topic.list');    
          	Route::get('topic-select-box','Exam\QuestionController@topicSelectBox')->name('admin.topic.select.box');
          	Route::get('question-type','Exam\QuestionController@questionType')->name('admin.question.type');    

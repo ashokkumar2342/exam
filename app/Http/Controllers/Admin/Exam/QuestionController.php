@@ -26,10 +26,44 @@ class QuestionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function show()
     {
         try {
+            $classes = $sections =MyFuncs::getAllClasses();
+            $manageSections =Section::where('status',1)->orderBy('subject_id','ASC')->orderBy('section_id','ASC')->get(); 
+            $subjects = SubjectType::orderBy('sorting_order_id','ASC')->get();  
+            $QuestionType =new QuestionType();
+            $questionTypes=$QuestionType->getQuestionType();
+            $difficultyLevel =new DifficultyLevel();
+            $difficultyLevels=$difficultyLevel->getDifficultyLevel();
+            $data['questionTypes']=$questionTypes;  
+            $data['subjects']=$subjects;  
+            $data['manageSections']=$manageSections;  
+            $data['classes']=$classes;  
+            $data['difficultyLevels']=$difficultyLevels;  
+            return view('admin.exam.question.show',$data); 
+        } catch (Exception $e) {
             
+        }
+    }
+    public function showTable(Request $request)
+    {
+        try {
+             $question =new Question(); 
+             $arr=array();
+             $data=array();
+             $arr['question_type_id']=$request->question_type; 
+             $arr['class_id']=$request->class; 
+             $arr['subject_id']=$request->subject; 
+             $arr['section_id']=$request->section; 
+             $arr['topic_id']=$request->topic;  
+             $arr['difficulty_level_id']=$request->difficulty_level; 
+             $questions=$question->getResult($arr);  
+             $data['questions']=$questions;
+             $response=array();
+             $response['status']=1;
+             $response['data']=view('admin.exam.question.question_table',$data)->render(); 
+             return  $response; 
         } catch (Exception $e) {
             
         }

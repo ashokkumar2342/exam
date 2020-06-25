@@ -16,6 +16,7 @@ yarn-error.log
 *.zip
 .env.example
 /storage/app/public/barcode
+/storage
 /demo
 /loksabha
 /policy
