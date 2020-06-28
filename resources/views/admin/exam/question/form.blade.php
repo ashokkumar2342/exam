@@ -45,9 +45,15 @@
                 <div class="col-lg-12" id="question_type_result">
                   
                  </div> 
-                 <div class="col-lg-12 text-center">
+                 <div class="col-lg-6 text-right">
                     <div class="form-group"> 
-                        <input type="submit" name="submit"  id="submit" class="btn btn-success">
+                        <input type="submit" name="submit"  id="submit" value="Save As Draft" class="btn btn-success">
+                    </div> 
+
+                 </div> 
+                 <div class="col-lg-6 text-left">
+                    <div class="form-group"> 
+                        <input type="submit" name="submit"  id="submit" value="Final Submit"  class="btn btn-success">
                     </div> 
                  </div> 
               </div> 
@@ -70,14 +76,9 @@
     <!-- /.content -->
 @endsection
 @push('links')
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
 @endpush
  @push('scripts')
- <script type="text/javascript" src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-  
-  
- </script>
- <script type="text/javascript" src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+ 
  <script>
    CKEDITOR.config.toolbar_Full =
        [

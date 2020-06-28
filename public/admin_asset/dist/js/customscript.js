@@ -228,7 +228,7 @@ function callSuccessPopup(msg){
 
 function callPopupLarge(obj,url){
 	$('#ModalLargeId').modal("show"); 
-	var divId='ModalLargeContentId';
+	var divId='ModalLargeContentId'; 
 	$('#'+divId).html('<div align="center"><img src="'+full_url_js+'/img/loader.gif" align="center" width="150px" style="padding-top:200px"></div>'); 
     $.get(url,{},
     function(response, status){
@@ -329,7 +329,8 @@ function callPopupLarge(obj,url){
 					  fontSizes: ['8', '9', '10', '11', '12', '14', '18', '24','28','30','32', '36', '48' , '64', '82', '150']
 				}); 
 							
-			}
+		}
+		
     });
 
 }

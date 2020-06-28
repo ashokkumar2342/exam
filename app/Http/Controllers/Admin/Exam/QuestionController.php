@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Model\Exam\DifficultyLevel;
 use App\Model\Exam\Option;
 use App\Model\Exam\Question;
+use App\Model\Exam\QuestionDescription;
 use App\Model\Exam\QuestionType;
 use App\Model\Exam\Topic;
 use App\Model\Section;
@@ -89,6 +90,28 @@ class QuestionController extends Controller
            return view('error.home'); 
         }
     }
+    public function questionEdit($id)
+    {
+        try {
+          $id =Crypt::decrypt($id);
+          $classes = $sections =MyFuncs::getAllClasses();
+          $manageSections =Section::where('status',1)->orderBy('subject_id','ASC')->orderBy('section_id','ASC')->get(); 
+          $subjects = SubjectType::orderBy('sorting_order_id','ASC')->get();  
+          $QuestionType =new QuestionType();
+          $questionTypes=$QuestionType->getQuestionType();
+          $difficultyLevel =new DifficultyLevel();
+          $difficultyLevels=$difficultyLevel->getDifficultyLevel();
+          $data['questionTypes']=$questionTypes;  
+          $data['subjects']=$subjects;  
+          $data['manageSections']=$manageSections;  
+          $data['classes']=$classes;  
+          $data['difficultyLevels']=$difficultyLevels;  
+          return view('admin.exam.question.edit_form',$data);  
+        } catch (Exception $e) {
+           Log::error('QuestionController-index: '.$e->getMessage());       
+           return view('error.home'); 
+        }
+    }
     public function questionStore(Request $request)
     { 
         try {
@@ -114,25 +137,24 @@ class QuestionController extends Controller
           }
           $question =new Question(); 
           $question->question_type_id=$request->question_type; 
-          $question->class_id=$request->class; 
-          $question->subject_id=$request->subject; 
-          $question->section_id=$request->section; 
-          $question->topic_id=$request->topic; 
-          $question->details=$request->question; 
-          if ($request->question_type==1) {
-            $question->answer=$request->correct_answer;   
-          }elseif ($request->question_type==2) {
-            $question->answer=implode(',', $request->correct_answer); 
-          }
           
+          $question->details=$request->question; 
           $question->title=$request->title; 
           $question->solution=$request->solution; 
           $question->video_url=$request->video_url; 
-          $question->difficulty_level_id=$request->difficulty_level; 
+          
           $question->created_by=Auth::guard('admin')->user()->id; 
-          $question->save(); 
+          $question->save();  
           if (!empty($question->id)) {
-            
+            $questionDescription =new QuestionDescription();  
+            $questionDescription->question_id=$question->id; 
+            $questionDescription->class_id=$request->class; 
+            $questionDescription->subject_id=$request->subject; 
+            $questionDescription->section_id=$request->section; 
+            $questionDescription->topic_id=$request->topic;
+            $questionDescription->difficulty_level_id=$request->difficulty_level; 
+            $questionDescription->save(); 
+
             
             foreach ($request->option as $key => $value) {
               $option =new Option();
@@ -150,8 +172,7 @@ class QuestionController extends Controller
               $option->question_id=$question->id;
               $option->description=$value;
               $option->is_correct_ans=$correct_answer;
-              $option->positive_marks=$request->positive_marking[$key];
-              $option->negative_marks=$request->nagative_marking[$key];
+              $option->marking=$request->marking[$key]; 
               $option->save();
             }
             

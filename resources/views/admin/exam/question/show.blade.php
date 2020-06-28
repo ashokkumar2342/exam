@@ -12,7 +12,7 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-              <form action="{{ route('admin.question.show.table') }}"  method="post"  class="add_form" accept-charset="utf-8" data-table="question_table" success-content-id="question_div" id="question_form">
+              <form action="{{ route('admin.question.show.table') }}"  method="post"  class="add_form" accept-charset="utf-8" data-table="question_table" no-reset="true" success-content-id="question_div" id="question_form">
                {{ csrf_field() }} 
               <div class="row">
               	@include('admin.exam.question.select_form')

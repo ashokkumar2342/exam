@@ -1,10 +1,8 @@
   <div class="input_fields_wrap"> 
   	 <input type="radio" id="answer" name="correct_answer" value="1"> 
      <label> 1. Correct Answer</label>
-     <label style="padding-left:10px"> Positive Marking</label>
-     <input type="number" name="positive_marking[]" style="width: 3em">
-     <label style="padding-left:10px"> Nagative Marking</label>
-     <input type="number" name="nagative_marking[]" style="width: 3em">
+     <label style="padding-left:10px"> Marking</label>
+     <input type="number" name="marking[]" style="width: 3em"> 
      <div> <textarea class="ckeditor" id="option_1" name="option[]"></textarea></div>
      
      <br>
@@ -23,7 +21,7 @@
         if(x < max_fields){ //max input box allowed
             x++; //text box increment
             var editorId = 'option_' +x;
-            $(wrapper).append('<div> <input type="radio" id="answer" name="correct_answer" value="'+x+'">  <label> '+x+'. Correct Answer</label>  <label style="padding-left:10px"> Positive Marking</label> <input type="number" name="positive_marking[]" style="width: 3em"><label style="padding-left:10px"> Nagative Marking</label> <input type="number" name="nagative_marking[]" style="width: 3em"> <textarea id="'+editorId+'" class="ckeditor" name="option[]"></textarea><a href="#" class="remove_field">Remove</a></div></br>'); //add input box           
+            $(wrapper).append('<div> <input type="radio" id="answer" name="correct_answer" value="'+x+'">  <label> '+x+'. Correct Answer</label>  <label style="padding-left:10px"> Marking</label> <input type="number" name="marking[]" style="width: 3em"><textarea id="'+editorId+'" class="ckeditor" name="option[]"></textarea><a href="#" class="remove_field">Remove</a></div></br>'); //add input box           
              
             CKEDITOR.config.toolbar_Full =
                 [

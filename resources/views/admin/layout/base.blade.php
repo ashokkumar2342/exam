@@ -1,10 +1,10 @@
-
+  
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>ISKOOL</title>
+  <title>Exam</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.6 -->
@@ -100,6 +100,7 @@
 
     <!-- jQuery 2.2.3 -->
     <script src="{{ asset('admin_asset/plugins/jQuery/jquery-2.2.3.min.js') }}"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <!-- Bootstrap 3.3.6 -->
     <script src="{{ asset('admin_asset/bootstrap/js/bootstrap.min.js') }}"></script>
     <!-- SlimScroll -->
@@ -119,7 +120,7 @@
     </script>
 
 {{-- <script src="{{ asset('admin_asset/plugins/select2/select2.full.min.js') }}"></script> --}}
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
  {{-- <script src="{{ asset('admin_asset/plugins/select2/select2.full.min.js') }}"></script> --}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script> 
  <script src={!! asset('admin_asset/dist/js/summernote.js?ver=1') !!}></script>
@@ -128,13 +129,10 @@
  <script>window.MathJax = { MathML: { extensions: ["mml3.js", "content-mathml.js"]}};</script>
  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=MML_HTMLorMML"></script>
   <script type="text/javascript" src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-  <script src={!! asset('admin_asset/ckeditor4/ckeditor.js')!!}> 
-   
-{{--     <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script> --}}
-
-      {{-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script> --}}
-      @include('admin.include.message')
-      @include('admin.include.model')
+  <script src={!! asset('admin_asset/ckeditor4/ckeditor.js')!!}> </script>
+ 
+    @include('admin.include.message')
+    @include('admin.include.model')
     @stack('scripts')
     <script>
       $( ".datepicker").datepicker({dateFormat:'dd-mm-yy'}); 
