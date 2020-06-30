@@ -8,6 +8,7 @@ use App\Model\Exam\DifficultyLevel;
 use App\Model\Exam\Option;
 use App\Model\Exam\Question;
 use App\Model\Exam\QuestionDescription;
+use App\Model\Exam\QuestionDraft;
 use App\Model\Exam\QuestionType;
 use App\Model\Exam\Topic;
 use App\Model\Section;
@@ -72,6 +73,8 @@ class QuestionController extends Controller
     public function questionForm()
     {
         try {
+          $user_id =MyFuncs::getUserId();
+          $df =QuestionDraft::where(['user_id'=>$user_id])->first();  
           $classes = $sections =MyFuncs::getAllClasses();
           $manageSections =Section::where('status',1)->orderBy('subject_id','ASC')->orderBy('section_id','ASC')->get(); 
           $subjects = SubjectType::orderBy('sorting_order_id','ASC')->get();  
@@ -84,6 +87,9 @@ class QuestionController extends Controller
           $data['manageSections']=$manageSections;  
           $data['classes']=$classes;  
           $data['difficultyLevels']=$difficultyLevels;  
+          if (!empty($df)) { 
+            $data['question']=  (array) json_decode($df->json); 
+          }
           return view('admin.exam.question.form',$data);  
         } catch (Exception $e) {
            Log::error('QuestionController-index: '.$e->getMessage());       
@@ -187,11 +193,57 @@ class QuestionController extends Controller
            return view('error.home'); 
         }
     }
+    public function questionDraftStore(Request $request)
+    {
+        try { 
+              $ins =array();
+              $ins['question_type_id']=$request->question_type;  
+              $ins['details']=$request->question; 
+              $ins['title']=$request->title; 
+              $ins['solution']=$request->solution; 
+              $ins['video_url']=$request->video_url;   
+              $ins['class_id']=$request->class; 
+              $ins['subject_id']=$request->subject; 
+              $ins['section_id']=$request->section; 
+              $ins['topic_id']=$request->topic;
+              $ins['difficulty_level_id']=$request->difficulty_level; 
+              $ins['option']=$request->option; 
+              $ins['marking']=$request->marking; 
+              $ins['is_correct_ans']=$request->correct_answer; 
+            
+
+            $user_id =Auth::guard('admin')->user()->id;
+           
+            $draft =QuestionDraft::firstOrNew(['user_id'=>$user_id]);
+            $draft->json=json_encode($ins);
+            $draft->user_id=$user_id;
+            $draft->save();
+             
+        } catch (Exception $e) {
+           Log::error('QuestionController-index: '.$e->getMessage());       
+           return view('error.home'); 
+        }
+    } 
     public function questionType(Request $request)
     {
         try {  
+
+            $user_id =MyFuncs::getUserId();
+            if (empty($request->option)) {
+               $df =QuestionDraft::where(['user_id'=>$user_id])->first(); 
+               if (!empty($df)) {
+                 $question =(array) json_decode($df->json); 
+               }else{
+                $question=array();
+               }
+            
+                
+            }else{
+
+            }
+
             if ($request->id==1) {
-                return view('admin.exam.question.single_type')->render();
+                return view('admin.exam.question.single_type',compact('question'))->render();
             }elseif($request->id==2){
                 return view('admin.exam.question.multiple_type')->render();
             }
@@ -216,13 +268,14 @@ class QuestionController extends Controller
     public function topicSelectBox(Request $request)
     {
         try {  
+            $topic_id =$request->topic_id;
             $subject_id =$request->subject;
             $section_id =$request->id;
             $class_id =$request->class;
             $topic =new Topic();
             $topics= $topic->getTopicBySubjectOrSection($class_id,$subject_id,$section_id);
              
-            return view('admin.exam.topic.topic_select_box',compact('topics'));  
+            return view('admin.exam.topic.topic_select_box',compact('topics','topic_id'));  
         } catch (Exception $e) {
            Log::error('QuestionController-index: '.$e->getMessage());       
            return view('error.home'); 

@@ -51,9 +51,11 @@ class SectionController extends Controller
     }
 
      public function sectionSelectBox(Request $request)
-    {  
+    {    
+        $section_id =$request->section_id;   
+        $topic_id =$request->topic_id;   
          $sections =Section::where('subject_id',$request->id)->get(); 
-        return view('admin.manage.section.selectBox',compact('sections'))->render();
+        return view('admin.manage.section.selectBox',compact('sections','section_id','topic_id'))->render();
     }
 
     /**

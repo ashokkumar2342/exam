@@ -12,7 +12,7 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-              <form action="{{ route('admin.question.store') }}" select-triger="question_type" method="post"  class="add_form" accept-charset="utf-8" id="question_form" no-reset="true">
+              <form action="{{ route('admin.question.store') }}" select-triger="question_type" method="post"  class="add_form" accept-charset="utf-8" id="question_form" no-reset="true" search-url="{{ route('admin.question.draft.store') }}" >
                {{ csrf_field() }} 
               <div class="row">
               	@include('admin.exam.question.select_form') 
@@ -31,14 +31,14 @@
                 <div class="col-md-12">
                   <div class="form-group" >
                       <label>Question</label> 
-                      <textarea class="ckeditor" id="question" name="question"></textarea>
+                      <textarea class="ckeditor" id="question" name="question">{{ @$question['details'] }}</textarea>
                   </div> 
                   
                 </div>
                 <div class="col-md-12">
                   <div class="form-group" >
                       <label>Solution</label> 
-                      <textarea class="ckeditor" id="solution" name="solution"></textarea>
+                      <textarea class="ckeditor" id="solution" name="solution">{{ @$question['solution'] }}</textarea>
                   </div> 
                   
                 </div>
@@ -47,13 +47,13 @@
                  </div> 
                  <div class="col-lg-6 text-right">
                     <div class="form-group"> 
-                        <input type="submit" name="submit"  id="submit" value="Save As Draft" class="btn btn-success">
+                        <input type="button" name="submit"  id="submit" value="Save As Draft" class="btn btn-success" onclick="CKupdate();searchForm(this.form)">
                     </div> 
 
                  </div> 
                  <div class="col-lg-6 text-left">
                     <div class="form-group"> 
-                        <input type="submit" name="submit"  id="submit" value="Final Submit"  class="btn btn-success">
+                        <input type="submit" name="submit" onclick="CKupdate()"  id="submit" value="Final Submit"  class="btn btn-success">
                     </div> 
                  </div> 
               </div> 
@@ -102,5 +102,11 @@
         extraPlugins: 'base64image,divarea,ckeditor_wiris',
         language: 'en'
    });
+   function CKupdate(){
+       for ( instance in CKEDITOR.instances )
+           CKEDITOR.instances[instance].updateElement();
+   }
+   $("#subject").trigger('change');
+   $("#question_type").trigger('change');
  </script>
 @endpush

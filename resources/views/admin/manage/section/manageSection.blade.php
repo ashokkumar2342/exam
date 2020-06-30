@@ -160,15 +160,7 @@
                    $('.checked_all').prop('checked',false);
             }
         });       
-</script>
- $(document).ready(function() {
-    $('#class_section').DataTable( {
-        dom: 'Bfrtip',
-        buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-        ]
-    } );
-} );
+</script> 
      
  </script>
  <script type="text/javascript" src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>

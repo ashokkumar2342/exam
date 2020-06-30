@@ -393,6 +393,7 @@ function searchForm(formObj){
     var request_method = 'POST'; //get form GET/POST method
     var form_data = new FormData(formObj); //Encode form elements for submission
     $(formObj).find(".alert").remove();
+    $('button[type=button],button[type=submit], input[type=submit]').prop('disabled',true);
     $.ajax({
         url : post_url,
         type: request_method,
@@ -428,37 +429,36 @@ function searchForm(formObj){
 	uploadProgress.remove();
 	
 	if(response.status==0){
-		$('button[type=submit], input[type=submit]').prop('disabled',false); 
 		if(formObj.getAttribute('import')=="true"){
-			errorMsg(response.msg)
-			//$('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button> <strong>'+response.msg+'</strong>'+response.data+'</div>').insertAfter(formObj);
+			$('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button> <strong>'+response.msg+'</strong>'+response.data+'</div>').insertAfter(formObj);
 			formObj.reset();
+		}else if(formObj.getAttribute('toast-msg')=="true")
+		{
+			ToastErrorMsg(response.msg);
 		}
 		else{
 			if(formObj.getAttribute('error-id')){
 				$('#'+formObj.getAttribute('error-id')).html(response.msg);
 			}else{
-				errorMsg(response.msg)
 				
-				//$(formObj).append($('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button><strong>Warning!</strong> '+response.msg+'</div>'));
+				$(formObj).append($('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button><strong>Warning!</strong> '+response.msg+'</div>'));
 			}
 		}
 	}else if(response){
 		console.log(response);
 		$('#adv_filter_content').html(response);
-		if(formObj.getAttribute('data-table-without-pagination'))
-				{
-					$('#'+formObj.getAttribute('data-table-without-pagination')).DataTable({
-					'paging':   false,
-					dom: 'Bfrtip',
-						buttons: [
-							'copy', 'csv', 'excel', 'pdf', 'print'
-						]
-				});
-				}
-				
-		
-		else{
+		if(formObj.getAttribute('data-table-without-pagination')){
+			$('#'+formObj.getAttribute('data-table-without-pagination')).DataTable({
+				'paging':   false,
+				colReorder: true,
+				dom: 'Bfrtip',
+				buttons: [
+					 'csv', 'excel', 'pdf', 'print'
+				]
+			});
+		}else if(formObj.getAttribute('toast-msg')=="true"){
+			ToastSuccessMsg(response.msg);
+		}else{
 			$(formObj).append($('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button><strong>Success!</strong> '+response.msg+'</div>'));
 		}
 
@@ -472,12 +472,37 @@ function searchForm(formObj){
        		 }
 		}
 
+		if(formObj.getAttribute('button-click') && response.status==1)
+		{	
+			$('button[type=button],button[type=submit], input[type=submit]').prop('disabled',false);
+			var myStr = formObj.getAttribute('button-click');
+        	var strArray = myStr.split(",");
+        
+        	for(var i = 0; i < strArray.length; i++){
+        		$("#"+strArray[i]).click();
+       		 }
+		}
+
+		if(formObj.getAttribute('window-open')){
+			var myStr = formObj.getAttribute('window-open')+'/'+response.data;
+			window.open(myStr);
+		}
+
+		if(formObj.getAttribute('window-open-without-obj')){
+			var myStr = formObj.getAttribute('window-open-without-obj');
+			window.open(myStr);
+		}
+
 		if(formObj.getAttribute('no-reset')!="true"){
 			formObj.reset();
 			$(formObj).find('.multiselect').selectpicker("refresh");
-			$(formObj).find('.summernote').summernote("reset");
+			$(formObj).find('.summernote').shouldInitialize = function () {
+				$(formObj).find('.summernote').summernote("reset");
+				};
 		}
 			
 	}
+	$('button[type=button],button[type=submit], input[type=submit]').prop('disabled',false);
     });
 }
+ 

@@ -133,6 +133,7 @@ function callAjax(obj,url,divId,callback){
 			}
 			if(obj.getAttribute('editor_question')!="")
 			{  
+				numberOfOption=obj.getAttribute('editor_question');	
 			 CKEDITOR.config.toolbar_Full =
 			     [
 			     { name: 'document', items : [ 'Source'] },
@@ -141,13 +142,15 @@ function callAjax(obj,url,divId,callback){
 			     { name: 'basicstyles', items : [ 'Bold','Italic','Underline'] },
 			     { name: 'paragraph', items : [ 'JustifyLeft','JustifyCenter','JustifyRight'] }
 			     ];
-			 CKEDITOR.replace('option_1', { height: 100 });
-			 CKEDITOR.plugins.addExternal('divarea', '../extraplugins/divarea/', 'plugin.js');
+			  	for(var i = 1; i <= numberOfOption; i++){
+		  			CKEDITOR.replace('option_'+i, { height: 100 });
+		  			CKEDITOR.plugins.addExternal('divarea', '../extraplugins/divarea/', 'plugin.js'); 
+		  			CKEDITOR.replace('option_'+i, {
+		  			     extraPlugins: 'base64image,divarea,ckeditor_wiris',
+		  			     language: 'en'
+		  			}); 
+		 		}    
 			 
-			 CKEDITOR.replace('option_1', {
-			      extraPlugins: 'base64image,divarea,ckeditor_wiris',
-			      language: 'en'
-			 });
 			}
 			else if(obj.getAttribute('data-table-without-pagination'))
 			{

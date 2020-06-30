@@ -1,12 +1,30 @@
-  <div class="input_fields_wrap"> 
-  	 <input type="radio" id="answer" name="correct_answer" value="1"> 
-     <label> 1. Correct Answer</label>
-     <label style="padding-left:10px"> Marking</label>
-     <input type="number" name="marking[]" style="width: 3em"> 
-     <div> <textarea class="ckeditor" id="option_1" name="option[]"></textarea></div>
-     
-     <br>
- </div> 
+  @if (empty($question['option']))
+    @foreach ([0,1,2,3] as $key=>$value)
+         <div class="input_fields_wrap"> 
+           <input type="radio" id="answer" name="correct_answer" value="1"> 
+            <label> {{ $key+1 }}. Correct Answer</label>
+            <label style="padding-left:10px"> Marking</label>
+            <input type="number" name="marking[]" style="width: 3em"> 
+            <div> <textarea class="ckeditor" id="option_{{ $key+1 }}" name="option[]"></textarea></div>
+            
+            <br>
+        </div> 
+      @endforeach
+   @else
+    @foreach ($question['option'] as $key=>$value)
+         <div class="input_fields_wrap"> 
+           <input type="radio" id="answer" name="correct_answer" value="1"> 
+            <label> {{ $key+1 }}. Correct Answer</label>
+            <label style="padding-left:10px"> Marking</label>
+            <input type="number" name="marking[]" style="width: 3em" value="{{ $question['marking'][$key] }}"> 
+            <div> <textarea class="ckeditor" id="option_{{ $key+1 }}" name="option[]">{{ $value }}</textarea></div>
+            
+            <br>
+        </div> 
+      @endforeach
+  @endif
+  
+ 
  <button class="add_field_button pull-right" id="add_field_button">Add More Fields</button>
 <script>
 

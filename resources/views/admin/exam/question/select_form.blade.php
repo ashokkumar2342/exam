@@ -4,7 +4,7 @@
       <select class="form-control"  multiselect-form="true"  name="class" id="class"> 
         <option value="" selected="" disabled>Select Class</option>
         @foreach ($classes as $key=>$value)
-           <option value="{{ $key }}">{{ $value }}</option>
+           <option value="{{ $key }}" {{ @$question['class_id']==$key?'selected':'' }}>{{ $value }}</option>
         @endforeach  
       </select>  
   </div> 
@@ -12,10 +12,10 @@
 <div class="col-md-3">
   <div class="form-group">
       {{ Form::label('class','Subject',['class'=>' control-label']) }}  
-      <select class="form-control"  multiselect-form="true"  name="subject" id="subject" onchange="callAjax(this,'{{route('admin.section.selectBox')}}'+'?id='+this.value,'section_list')" > 
+      <select class="form-control"  multiselect-form="true" select-triger="section"  name="subject" id="subject" onchange="callAjax(this,'{{route('admin.section.selectBox')}}'+'?id='+this.value+'&section_id={{ @$question['section_id']}}'+'&topic_id={{ @$question['topic_id']}}','section_list')" > 
         <option value="" selected="" disabled>Select Subject</option>
         @foreach ($subjects as $subject)
-           <option value="{{ $subject->id }}">{{ $subject->name }}</option>
+           <option value="{{ $subject->id }}" {{ @$question['subject_id']==$subject->id?'selected':'' }}>{{ $subject->name }}</option>
         @endforeach  
       </select>  
   </div> 
@@ -41,7 +41,7 @@
       <select name="difficulty_level"  id="difficulty_level" class="form-control"> 
         <option value="" selected disabled>Select Difficulty Level</option>
         @foreach ($difficultyLevels  as $difficultyLevel)
-           <option value="{{ $difficultyLevel->id }}">{{ $difficultyLevel->name }}</option>
+           <option value="{{ $difficultyLevel->id }}" {{ @$question['difficulty_level_id']==$difficultyLevel->id?'selected':'' }}>{{ $difficultyLevel->name }}</option>
            
         @endforeach
       </select>
@@ -49,11 +49,17 @@
 </div>  
 <div class="col-md-3">
   <div class="form-group" >
+    @php
+      $value=count(@$question['option']);
+      if($value==0){
+        $value=4;
+      } 
+    @endphp
       <label>Question Type</label>
-      <select name="question_type" button-click="add_field_button,add_field_button,add_field_button" editor_question="true" id="question_type" class="form-control" onchange="callAjax(this,'{{ route('admin.question.type') }}','question_type_result')"> 
+      <select name="question_type" button-click="" editor_question="{{ $value }}" id="question_type" class="form-control" onchange="callAjax(this,'{{ route('admin.question.type') }}'+'?id='+this.value+'&option={{ @$question['id']}}','question_type_result')"> 
         <option value="" selected disabled>Select Question Type</option>
         @foreach ($questionTypes  as $questionType)
-           <option value="{{ $questionType->id }}">{{ $questionType->name }}</option>
+           <option value="{{ $questionType->id }}" {{ @$question['question_type_id']==$questionType->id?'selected':'' }}>{{ $questionType->name }}</option>
            
         @endforeach
       </select>
