@@ -12,20 +12,20 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-              <form action="{{ route('admin.question.store') }}" select-triger="question_type" method="post"  class="add_form" accept-charset="utf-8" id="question_form" no-reset="true" search-url="{{ route('admin.question.draft.store') }}" >
+              <form action="{{ route('admin.question.store') }}"  method="post"  class="add_form" accept-charset="utf-8" id="question_form" no-reset="true" search-url="{{ route('admin.question.draft.store') }}" redirect-to="{{ route('admin.question.add') }}">
                {{ csrf_field() }} 
               <div class="row">
               	@include('admin.exam.question.select_form') 
                 <div class="col-md-8">
                   <div class="form-group" >
                       <label>Title</label>
-                      <input type="text" name="title" class="form-control">
+                      <input type="text" name="title" class="form-control" value="{{ @$question['title'] }}">
                   </div> 
                 </div>
                 <div class="col-md-4">
                   <div class="form-group" >
                       <label>Video Url</label>
-                      <input type="text" name="video_url" class="form-control">
+                      <input type="text" name="video_url" class="form-control" value="{{ @$question['video_url'] }}">
                   </div> 
                 </div>
                 <div class="col-md-12">
@@ -47,7 +47,7 @@
                  </div> 
                  <div class="col-lg-6 text-right">
                     <div class="form-group"> 
-                        <input type="button" name="submit"  id="submit" value="Save As Draft" class="btn btn-success" onclick="CKupdate();searchForm(this.form)">
+                        <input type="button" name="submit"  id="btn_draft" value="Save As Draft" class="btn btn-success" onclick="CKupdate();searchForm(this.form)">
                     </div> 
 
                  </div> 
@@ -108,5 +108,8 @@
    }
    $("#subject").trigger('change');
    $("#question_type").trigger('change');
+   setInterval(function() {
+      $('#btn_draft').click();
+   }, 60 * 1000); // 60 * 1000 milsec
  </script>
 @endpush

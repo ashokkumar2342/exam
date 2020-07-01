@@ -183,7 +183,7 @@ class QuestionController extends Controller
             }
             
           }
-
+          $this->questionDraftUpdate($request);
           $response=array();  
           $response['status']=1;  
           $response['msg']='Save Successfully';  
@@ -193,8 +193,7 @@ class QuestionController extends Controller
            return view('error.home'); 
         }
     }
-    public function questionDraftStore(Request $request)
-    {
+    public function questionDraftStore(Request $request){
         try { 
               $ins =array();
               $ins['question_type_id']=$request->question_type;  
@@ -210,14 +209,44 @@ class QuestionController extends Controller
               $ins['option']=$request->option; 
               $ins['marking']=$request->marking; 
               $ins['is_correct_ans']=$request->correct_answer; 
-            
 
-            $user_id =Auth::guard('admin')->user()->id;
-           
-            $draft =QuestionDraft::firstOrNew(['user_id'=>$user_id]);
-            $draft->json=json_encode($ins);
-            $draft->user_id=$user_id;
-            $draft->save();
+              $user_id =Auth::guard('admin')->user()->id; 
+              $draft =QuestionDraft::firstOrNew(['user_id'=>$user_id]);
+              $draft->json=json_encode($ins);
+              $draft->user_id=$user_id;
+              $draft->save();
+             
+        } catch (Exception $e) {
+           Log::error('QuestionController-index: '.$e->getMessage());       
+           return view('error.home'); 
+        }
+    }
+    public function questionDraftUpdate($request){
+        try { 
+              $ins =array();
+              $ins['question_type_id']=$request->question_type;  
+              $ins['details']=null; 
+              $ins['title']=null; 
+              $ins['solution']=null; 
+              $ins['video_url']=null;   
+              $ins['class_id']=$request->class; 
+              $ins['subject_id']=$request->subject; 
+              $ins['section_id']=$request->section; 
+              $ins['topic_id']=$request->topic;
+              $ins['difficulty_level_id']=$request->difficulty_level;
+              $option=array(); 
+              foreach ($request->option as $key => $value) {
+                 $option[]=null;
+              }
+              $ins['option']=$option; 
+              $ins['marking']=null;  
+              $ins['is_correct_ans']=null; 
+
+              $user_id =Auth::guard('admin')->user()->id; 
+              $draft =QuestionDraft::firstOrNew(['user_id'=>$user_id]);
+              $draft->json=json_encode($ins);
+              $draft->user_id=$user_id;
+              $draft->save();
              
         } catch (Exception $e) {
            Log::error('QuestionController-index: '.$e->getMessage());       

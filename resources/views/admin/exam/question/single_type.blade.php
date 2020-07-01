@@ -1,31 +1,40 @@
   @if (empty($question['option']))
+  <div class="input_fields_wrap"> 
     @foreach ([0,1,2,3] as $key=>$value)
-         <div class="input_fields_wrap"> 
-           <input type="radio" id="answer" name="correct_answer" value="1"> 
+         <div id="div_{{ $key+1 }}">
+            <input type="radio" id="answer" name="correct_answer" value="{{ $key+1 }}"> 
             <label> {{ $key+1 }}. Correct Answer</label>
             <label style="padding-left:10px"> Marking</label>
             <input type="number" name="marking[]" style="width: 3em"> 
             <div> <textarea class="ckeditor" id="option_{{ $key+1 }}" name="option[]"></textarea></div>
-            
+             
             <br>
-        </div> 
+         </div>
+          
+      
       @endforeach
+    </div> 
    @else
+   <div class="input_fields_wrap"> 
     @foreach ($question['option'] as $key=>$value)
-         <div class="input_fields_wrap"> 
-           <input type="radio" id="answer" name="correct_answer" value="1"> 
+           <div id="div_{{ $key+1 }}">
+            <input type="radio" id="answer" name="correct_answer" value="{{ $key+1 }}" {{ $question['is_correct_ans']==$key+1?'checked':'' }}> 
             <label> {{ $key+1 }}. Correct Answer</label>
             <label style="padding-left:10px"> Marking</label>
             <input type="number" name="marking[]" style="width: 3em" value="{{ $question['marking'][$key] }}"> 
             <div> <textarea class="ckeditor" id="option_{{ $key+1 }}" name="option[]">{{ $value }}</textarea></div>
             
             <br>
-        </div> 
+          </div>
+           
+        
       @endforeach
+      </div> 
+      <button  id="btn_remove" class="remove_field btn btn-danger btn-xs">Remove</button>
   @endif
   
  
- <button class="add_field_button pull-right" id="add_field_button">Add More Fields</button>
+ <button class="add_field_button pull-right btn btn-success btn-xs" id="add_field_button">Add More Fields</button>
 <script>
 
 	$(document).ready(function() { 
@@ -33,13 +42,14 @@
     var wrapper         = $(".input_fields_wrap"); //Fields wrapper
     var add_button      = $(".add_field_button"); //Add button ID
     
-    var x = 1; //initlal text box count
+    var x = {{ count($question['option']) }}; //initlal text box count
     $(add_button).click(function(e){ //on add input button click
         e.preventDefault();
         if(x < max_fields){ //max input box allowed
             x++; //text box increment
             var editorId = 'option_' +x;
-            $(wrapper).append('<div> <input type="radio" id="answer" name="correct_answer" value="'+x+'">  <label> '+x+'. Correct Answer</label>  <label style="padding-left:10px"> Marking</label> <input type="number" name="marking[]" style="width: 3em"><textarea id="'+editorId+'" class="ckeditor" name="option[]"></textarea><a href="#" class="remove_field">Remove</a></div></br>'); //add input box           
+            var div_x = 'div_' +x;
+            $(wrapper).append('<div id="'+div_x+'"> <input type="radio" id="answer" name="correct_answer" value="'+x+'">  <label> '+x+'. Correct Answer</label>  <label style="padding-left:10px"> Marking</label> <input type="number" name="marking[]" style="width: 3em"><textarea id="'+editorId+'" class="ckeditor" name="option[]"></textarea></div></br>'); //add input box           
              
             CKEDITOR.config.toolbar_Full =
                 [
@@ -59,9 +69,9 @@
         }
     });
     
-    $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
-    	if (x > 2) {
-    		 e.preventDefault(); $(this).parent('div').remove(); x--;
+    $('#btn_remove').on("click", function(e){ //user click on remove text
+    	if (x > 2) {  
+    		 e.preventDefault(); $('#div_'+x).remove(); x--;
     	}
        
     })
