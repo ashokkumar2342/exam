@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class EditQuestionHistory extends Model
 {
+	protected $guarded = [];
     function getResult($arr){
     	try {
     		 

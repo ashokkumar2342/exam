@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class DifficultyLevel extends Model
 {
-
-     protected $fillable=['id'];
+ 
+     protected $guarded = [];
 
    function getDifficultyLevel()
    {

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class QuestionType extends Model
 {
-	protected $fillable=['id'];
+	protected $guarded = [];
 	
   	function getQuestionType()
   	{

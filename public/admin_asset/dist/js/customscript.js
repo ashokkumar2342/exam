@@ -152,6 +152,30 @@ function callAjax(obj,url,divId,callback){
 		 		}    
 			 
 			}
+			if(obj.getAttribute('editor-show')!="")
+			{  
+				var myStr = obj.getAttribute('editor-show');
+	    	    var strArray = myStr.split(",");
+	    
+	        	for(var i = 0; i < strArray.length; i++){
+	        		CKEDITOR.config.toolbar_Full =
+	        		    [
+	        		    { name: 'document', items : [ 'Source'] },
+	        		    { name: 'clipboard', items : [ 'Cut','Copy','Paste','-','Undo','Redo' ] },
+	        		    { name: 'editing', items : [ 'Find'] },
+	        		    { name: 'basicstyles', items : [ 'Bold','Italic','Underline'] },
+	        		    { name: 'paragraph', items : [ 'JustifyLeft','JustifyCenter','JustifyRight'] }
+	        		    ];
+	        		CKEDITOR.replace(strArray[i], { height: 200 });
+	        		CKEDITOR.plugins.addExternal('divarea', '../extraplugins/divarea/', 'plugin.js');
+	        		
+	        		CKEDITOR.replace(strArray[i], {
+	        		     extraPlugins: 'base64image,divarea,ckeditor_wiris',
+	        		     language: 'en'
+	        		});
+	        		 
+	       		 } 
+			}
 			else if(obj.getAttribute('data-table-without-pagination'))
 			{
 			$("#"+obj.getAttribute('data-table-without-pagination')).DataTable({

@@ -210,6 +210,30 @@ function callJqueryDefault(divId){
 			formObj.reset();
 			 
 		}
+		if(formObj.getAttribute('editor-show')!="")
+		{  
+			var myStr = formObj.getAttribute('editor-show');
+    	    var strArray = myStr.split(",");
+    
+        	for(var i = 0; i < strArray.length; i++){
+        		CKEDITOR.config.toolbar_Full =
+        		    [
+        		    { name: 'document', items : [ 'Source'] },
+        		    { name: 'clipboard', items : [ 'Cut','Copy','Paste','-','Undo','Redo' ] },
+        		    { name: 'editing', items : [ 'Find'] },
+        		    { name: 'basicstyles', items : [ 'Bold','Italic','Underline'] },
+        		    { name: 'paragraph', items : [ 'JustifyLeft','JustifyCenter','JustifyRight'] }
+        		    ];
+        		CKEDITOR.replace(strArray[i], { height: 200 });
+        		CKEDITOR.plugins.addExternal('divarea', '../extraplugins/divarea/', 'plugin.js');
+        		
+        		CKEDITOR.replace(strArray[i], {
+        		     extraPlugins: 'base64image,divarea,ckeditor_wiris',
+        		     language: 'en'
+        		});
+        		 
+       		 } 
+		}
 		if(formObj.getAttribute('call-jquery-default')!=""){
 					callJqueryDefault(formObj.getAttribute('call-jquery-default'));
 					
@@ -434,7 +458,7 @@ function searchForm(formObj){
 			formObj.reset();
 		}else if(formObj.getAttribute('toast-msg')=="true")
 		{
-			ToastErrorMsg(response.msg);
+			successMsg(response.msg)
 		}
 		else{
 			if(formObj.getAttribute('error-id')){
@@ -457,7 +481,7 @@ function searchForm(formObj){
 				]
 			});
 		}else if(formObj.getAttribute('toast-msg')=="true"){
-			ToastSuccessMsg(response.msg);
+			successMsg(response.msg)
 		}else{
 			$(formObj).append($('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button><strong>Success!</strong> '+response.msg+'</div>'));
 		}
@@ -505,4 +529,380 @@ function searchForm(formObj){
 	$('button[type=button],button[type=submit], input[type=submit]').prop('disabled',false);
     });
 }
- 
+
+function thirdurl(formObj){
+	var pleaseWait=$("<div>please wait.......</div>");
+	var uploadProgress=$("<div class='upload-progress'><div class='progress-bar'></div></div>");
+	pleaseWait.insertAfter(formObj);
+    var post_url = formObj.getAttribute('third-url'); //get form action url
+    var request_method = 'POST'; //get form GET/POST method
+    var form_data = new FormData(formObj); //Encode form elements for submission
+    $(formObj).find(".alert").remove();
+    $('button[type=button],button[type=submit], input[type=submit]').prop('disabled',true);
+    $.ajax({
+        url : post_url,
+        type: request_method,
+        data : form_data,
+        contentType: false,
+        processData:false,
+        xhr: function(){
+        //upload Progress
+        var xhr = $.ajaxSettings.xhr();
+        if (xhr.upload) {
+			
+			pleaseWait.remove();
+			//update progressbar
+			uploadProgress.insertAfter(formObj);
+			//console.log(5);
+            xhr.upload.addEventListener('progress', function(event) {
+                var percent = 0;
+                var position = event.loaded || event.position;
+                var total = event.total;
+                if (event.lengthComputable) {
+                    percent = Math.ceil(position / total * 100);
+                }
+				//console.log(2);
+				uploadProgress.css("width", + percent +"%");
+				//console.log(3);
+            }, true);
+        }
+        return xhr;
+    }
+    }).done(function(response){ //
+	
+	pleaseWait.remove();
+	uploadProgress.remove();
+	
+	if(response.status==0){
+		if(formObj.getAttribute('import')=="true"){
+			$('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button> <strong>'+response.msg+'</strong>'+response.data+'</div>').insertAfter(formObj);
+			formObj.reset();
+		}else if(formObj.getAttribute('toast-msg')=="true")
+		{
+			successMsg(response.msg)
+		}
+		else{
+			if(formObj.getAttribute('error-id')){
+				$('#'+formObj.getAttribute('error-id')).html(response.msg);
+			}else{
+				
+				$(formObj).append($('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button><strong>Warning!</strong> '+response.msg+'</div>'));
+			}
+		}
+	}else if(response){
+		console.log(response);
+		$('#adv_filter_content').html(response);
+		if(formObj.getAttribute('data-table-without-pagination')){
+			$('#'+formObj.getAttribute('data-table-without-pagination')).DataTable({
+				'paging':   false,
+				colReorder: true,
+				dom: 'Bfrtip',
+					buttons: [
+						 'csv', 'excel', 'pdf', 'print'
+					]
+			});
+		}else if(formObj.getAttribute('toast-msg')=="true"){
+			successMsg(response.msg)
+		}else{
+			$(formObj).append($('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button><strong>Success!</strong> '+response.msg+'</div>'));
+		}
+
+		if(formObj.getAttribute('content-refresh') && response.status==1)
+		{	
+			var myStr = formObj.getAttribute('content-refresh');
+        	var strArray = myStr.split(",");
+        
+        	for(var i = 0; i < strArray.length; i++){
+        		$("#"+strArray[i]).load(location.href + ' #'+strArray[i]);
+       		 }
+		}
+
+		if(formObj.getAttribute('button-click') && response.status==1)
+		{	
+			$('button[type=button],button[type=submit], input[type=submit]').prop('disabled',false);
+			var myStr = formObj.getAttribute('button-click');
+        	var strArray = myStr.split(",");
+        
+        	for(var i = 0; i < strArray.length; i++){
+        		$("#"+strArray[i]).click();
+       		 }
+		}
+
+		if(formObj.getAttribute('no-reset')!="true"){
+			formObj.reset();
+			$(formObj).find('.multiselect').selectpicker("refresh");
+			$(formObj).find('.summernote').shouldInitialize = function () {
+				$(formObj).find('.summernote').summernote("reset");
+				};
+		}
+
+		if(formObj.getAttribute('pivot-view')=="true"){
+
+			var renderers = $.extend(
+            $.pivotUtilities.renderers,
+            $.pivotUtilities.plotly_renderers,
+            $.pivotUtilities.d3_renderers,
+            $.pivotUtilities.export_renderers
+            );
+
+			$("#output").pivotUI($("#input-table"), {
+                renderers: renderers,
+            });
+		}
+			
+	}
+	$('button[type=button],button[type=submit], input[type=submit]').prop('disabled',false);
+    });
+}
+
+function fourthurl(formObj){
+	var pleaseWait=$("<div>please wait.......</div>");
+	var uploadProgress=$("<div class='upload-progress'><div class='progress-bar'></div></div>");
+	pleaseWait.insertAfter(formObj);
+    var post_url = formObj.getAttribute('fourth-url'); //get form action url
+    var request_method = 'POST'; //get form GET/POST method
+    var form_data = new FormData(formObj); //Encode form elements for submission
+    $('button[type=button],button[type=submit], input[type=submit]').prop('disabled',true);
+    $(formObj).find(".alert").remove();
+    $.ajax({
+        url : post_url,
+        type: request_method,
+        data : form_data,
+        contentType: false,
+        processData:false,
+        xhr: function(){
+        //upload Progress
+        var xhr = $.ajaxSettings.xhr();
+        if (xhr.upload) {
+			
+			pleaseWait.remove();
+			//update progressbar
+			uploadProgress.insertAfter(formObj);
+			//console.log(5);
+            xhr.upload.addEventListener('progress', function(event) {
+                var percent = 0;
+                var position = event.loaded || event.position;
+                var total = event.total;
+                if (event.lengthComputable) {
+                    percent = Math.ceil(position / total * 100);
+                }
+				//console.log(2);
+				uploadProgress.css("width", + percent +"%");
+				//console.log(3);
+            }, true);
+        }
+        return xhr;
+    }
+    }).done(function(response){ //
+	
+	pleaseWait.remove();
+	uploadProgress.remove();
+	
+	if(response.status==0){
+		if(formObj.getAttribute('import')=="true"){
+			$('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button> <strong>'+response.msg+'</strong>'+response.data+'</div>').insertAfter(formObj);
+			formObj.reset();
+		}
+		else{
+			if(formObj.getAttribute('error-id')){
+				$('#'+formObj.getAttribute('error-id')).html(response.msg);
+			}else{
+				
+				$(formObj).append($('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button><strong>Warning!</strong> '+response.msg+'</div>'));
+			}
+		}
+	}else if(response.status==1){
+		//console.log(response);
+		$('#adv_filter_content').html(response.data);
+		if(formObj.getAttribute('data-table-without-pagination'))
+				{
+					$('#'+formObj.getAttribute('data-table-without-pagination')).DataTable({
+					'paging':   false,
+					colReorder: true,
+					dom: 'Bfrtip',
+						buttons: [
+							'csv', 'excel', 'pdf', 'print'
+						]
+				});
+				}
+				
+		
+		else{
+			$(formObj).append($('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button><strong>Success!</strong> '+response.msg+'</div>'));
+		}
+
+		if(formObj.getAttribute('content-refresh') && response.status==1)
+		{	
+			var myStr = formObj.getAttribute('content-refresh');
+        	var strArray = myStr.split(",");
+        
+        	for(var i = 0; i < strArray.length; i++){
+        		$("#"+strArray[i]).load(location.href + ' #'+strArray[i]);
+       		 }
+		}
+
+		if(formObj.getAttribute('button-click') && response.status==1)
+		{	
+			$('button[type=button],button[type=submit], input[type=submit]').prop('disabled',false);
+			var myStr = formObj.getAttribute('button-click');
+        	var strArray = myStr.split(",");
+        
+        	for(var i = 0; i < strArray.length; i++){
+        		$("#"+strArray[i]).click();
+       		 }
+		}
+
+		if(formObj.getAttribute('no-reset')!="true"){
+			formObj.reset();
+			$(formObj).find('.multiselect').selectpicker("refresh");
+			$(formObj).find('.summernote').shouldInitialize = function () {
+				$(formObj).find('.summernote').summernote("reset");
+				};
+		}
+		if(formObj.getAttribute('redirect-to'))
+		{
+			var redirect=formObj.getAttribute('redirect-to');
+			setTimeout(window.location.replace(redirect), 3000);
+		}
+
+		if(formObj.getAttribute('window-open')){
+			var myStr = formObj.getAttribute('window-open')+'/'+response.data;
+			window.open(myStr);
+		}
+
+		if(formObj.getAttribute('redirect-url'))
+		{
+			var redirect=formObj.getAttribute('redirect-url');
+			setTimeout(window.location.replace(redirect), 3000);
+			;
+		}
+			
+	}
+	$('button[type=button],button[type=submit], input[type=submit]').prop('disabled',false);
+    });
+}
+
+function fifthurl(formObj){
+	var pleaseWait=$("<div>please wait.......</div>");
+	var uploadProgress=$("<div class='upload-progress'><div class='progress-bar'></div></div>");
+	pleaseWait.insertAfter(formObj);
+    var post_url = formObj.getAttribute('fifth-url'); //get form action url
+    var request_method = 'POST'; //get form GET/POST method
+    var form_data = new FormData(formObj); //Encode form elements for submission
+    $(formObj).find(".alert").remove();
+    $('button[type=button],button[type=submit], input[type=submit]').prop('disabled',true);
+    $.ajax({
+        url : post_url,
+        type: request_method,
+        data : form_data,
+        contentType: false,
+        processData:false,
+        xhr: function(){
+        //upload Progress
+        var xhr = $.ajaxSettings.xhr();
+        if (xhr.upload) {
+			
+			pleaseWait.remove();
+			//update progressbar
+			uploadProgress.insertAfter(formObj);
+			//console.log(5);
+            xhr.upload.addEventListener('progress', function(event) {
+                var percent = 0;
+                var position = event.loaded || event.position;
+                var total = event.total;
+                if (event.lengthComputable) {
+                    percent = Math.ceil(position / total * 100);
+                }
+				//console.log(2);
+				uploadProgress.css("width", + percent +"%");
+				//console.log(3);
+            }, true);
+        }
+        return xhr;
+    }
+    }).done(function(response){ //
+	
+	pleaseWait.remove();
+	uploadProgress.remove();
+	
+	if(response.status==0){
+		if(formObj.getAttribute('import')=="true"){
+			$('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button> <strong>'+response.msg+'</strong>'+response.data+'</div>').insertAfter(formObj);
+			formObj.reset();
+		}else if(formObj.getAttribute('toast-msg')=="true")
+		{
+			successMsg(response.msg)
+		}
+		else{
+			if(formObj.getAttribute('error-id')){
+				$('#'+formObj.getAttribute('error-id')).html(response.msg);
+			}else{
+				
+				$(formObj).append($('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button><strong>Warning!</strong> '+response.msg+'</div>'));
+			}
+		}
+	}else if(response){
+		console.log(response);
+		$('#adv_filter_content').html(response.data);
+		if(formObj.getAttribute('data-table-without-pagination')){
+			$('#'+formObj.getAttribute('data-table-without-pagination')).DataTable({
+				'paging':   false,
+				colReorder: true,
+				dom: 'Bfrtip',
+					buttons: [
+						 'csv', 'excel', 'pdf', 'print'
+					]
+			});
+		}else if(formObj.getAttribute('toast-msg')=="true"){
+			successMsg(response.msg)
+		}else{
+			$(formObj).append($('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button><strong>Success!</strong> '+response.msg+'</div>'));
+		}
+
+		if(formObj.getAttribute('content-refresh') && response.status==1)
+		{	
+			var myStr = formObj.getAttribute('content-refresh');
+        	var strArray = myStr.split(",");
+        
+        	for(var i = 0; i < strArray.length; i++){
+        		$("#"+strArray[i]).load(location.href + ' #'+strArray[i]);
+       		 }
+		}
+
+		if(formObj.getAttribute('button-click') && response.status==1)
+		{	
+			$('button[type=button],button[type=submit], input[type=submit]').prop('disabled',false);
+			var myStr = formObj.getAttribute('button-click');
+        	var strArray = myStr.split(",");
+        
+        	for(var i = 0; i < strArray.length; i++){
+        		$("#"+strArray[i]).click();
+       		 }
+		}
+
+		if(formObj.getAttribute('no-reset')!="true"){
+			formObj.reset();
+			$(formObj).find('.multiselect').selectpicker("refresh");
+			$(formObj).find('.summernote').shouldInitialize = function () {
+				$(formObj).find('.summernote').summernote("reset");
+				};
+		}
+
+		if(formObj.getAttribute('pivot-view')=="true"){
+
+			var renderers = $.extend(
+            $.pivotUtilities.renderers,
+            $.pivotUtilities.plotly_renderers,
+            $.pivotUtilities.d3_renderers,
+            $.pivotUtilities.export_renderers
+            );
+
+			$("#output").pivotUI($("#input-table"), {
+                renderers: renderers,
+            });
+		}
+			
+	}
+	$('button[type=button],button[type=submit], input[type=submit]').prop('disabled',false);
+    });
+} 

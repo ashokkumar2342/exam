@@ -117,9 +117,48 @@ class QuestionController extends Controller
            Log::error('QuestionController-index: '.$e->getMessage());       
            return view('error.home'); 
         }
+    } 
+    public function questionEditShow(Request $request)
+    {
+        try {
+          $rules=[
+           'question_id' => 'required', 
+          ]; 
+          $validator = Validator::make($request->all(),$rules);
+          if ($validator->fails()) {
+              $errors = $validator->errors()->all();
+              $response=array();
+              $response["status"]=0;
+              $response["msg"]=$errors[0];
+              return response()->json($response);// response as json
+          }
+          $id =$request->question_id;
+          $q =new Question(); 
+          $question=$q->getQuestionById($id); 
+          $classes = $sections =MyFuncs::getAllClasses();
+          $manageSections =Section::where('status',1)->orderBy('subject_id','ASC')->orderBy('section_id','ASC')->get(); 
+          $subjects = SubjectType::orderBy('sorting_order_id','ASC')->get();  
+          $QuestionType =new QuestionType();
+          $questionTypes=$QuestionType->getQuestionType();
+          $difficultyLevel =new DifficultyLevel();
+          $difficultyLevels=$difficultyLevel->getDifficultyLevel();
+          $data['questionTypes']=$questionTypes;  
+          $data['subjects']=$subjects;  
+          $data['manageSections']=$manageSections;  
+          $data['classes']=$classes;  
+          $data['difficultyLevels']=$difficultyLevels; 
+          $data['question']=$question; 
+          $response=array();
+          $response['status']=1;
+          $response['data']=view('admin.exam.question.form_field',$data)->render(); 
+          return  $response;  
+        } catch (Exception $e) {
+           Log::error('QuestionController-index: '.$e->getMessage());       
+           return view('error.home'); 
+        }
     }
-    public function questionStore(Request $request)
-    { 
+    public function questionStore(Request $request,$id='')
+    {   $id=Crypt::decrypt($id);
         try {
           $rules=[
            'class' => 'required',             
@@ -141,7 +180,7 @@ class QuestionController extends Controller
               $response["msg"]=$errors[0];
               return response()->json($response);// response as json
           }
-          $question =new Question(); 
+          $question =Question::firstOrNew(['id'=>$id]); 
           $question->question_type_id=$request->question_type; 
           
           $question->details=$request->question; 
@@ -151,7 +190,7 @@ class QuestionController extends Controller
           
           $question->created_by=Auth::guard('admin')->user()->id; 
           $question->save();  
-          if (!empty($question->id)) {
+          if (empty($id)) {
             $questionDescription =new QuestionDescription();  
             $questionDescription->question_id=$question->id; 
             $questionDescription->class_id=$request->class; 
@@ -160,10 +199,10 @@ class QuestionController extends Controller
             $questionDescription->topic_id=$request->topic;
             $questionDescription->difficulty_level_id=$request->difficulty_level; 
             $questionDescription->save(); 
-
+          }
             
             foreach ($request->option as $key => $value) {
-              $option =new Option();
+              $option = Option::firstOrNew(['id'=>$request->option_id[$key]]);
               $correct_answer =0;
               if ($request->question_type==1) { 
                     if ($key+1 ==$request->correct_answer) {
@@ -181,8 +220,7 @@ class QuestionController extends Controller
               $option->marking=$request->marking[$key]; 
               $option->save();
             }
-            
-          }
+             
           $this->questionDraftUpdate($request);
           $response=array();  
           $response['status']=1;  
@@ -206,7 +244,7 @@ class QuestionController extends Controller
               $ins['section_id']=$request->section; 
               $ins['topic_id']=$request->topic;
               $ins['difficulty_level_id']=$request->difficulty_level; 
-              $ins['option']=$request->option; 
+              $ins['options']=$request->option; 
               $ins['marking']=$request->marking; 
               $ins['is_correct_ans']=$request->correct_answer; 
 
@@ -238,7 +276,7 @@ class QuestionController extends Controller
               foreach ($request->option as $key => $value) {
                  $option[]=null;
               }
-              $ins['option']=$option; 
+              $ins['options']=$option; 
               $ins['marking']=null;  
               $ins['is_correct_ans']=null; 
 
@@ -254,11 +292,11 @@ class QuestionController extends Controller
         }
     } 
     public function questionType(Request $request)
-    {
+    {  
         try {  
 
             $user_id =MyFuncs::getUserId();
-            if (empty($request->option)) {
+            if (empty($request->question_id)) {  
                $df =QuestionDraft::where(['user_id'=>$user_id])->first(); 
                if (!empty($df)) {
                  $question =(array) json_decode($df->json); 
@@ -268,13 +306,15 @@ class QuestionController extends Controller
             
                 
             }else{
+              $q =new Question(); 
+              $question=$q->getQuestionById($request->question_id);
 
             }
 
             if ($request->id==1) {
                 return view('admin.exam.question.single_type',compact('question'))->render();
             }elseif($request->id==2){
-                return view('admin.exam.question.multiple_type')->render();
+                return view('admin.exam.question.multiple_type',compact('question'))->render();
             }
              
         } catch (Exception $e) {

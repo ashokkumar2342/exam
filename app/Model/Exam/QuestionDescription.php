@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class QuestionDescription extends Model
 {
+	protected $guarded = [];
 	public $timestamps = false;
     function getResult($arr){
     	try {

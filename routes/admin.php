@@ -240,8 +240,9 @@ Route::group(['middleware' => 'admin'], function() {
  		});
  		Route::group(['prefix' => 'question'], function() {       
          	Route::get('add','Exam\QuestionController@questionForm')->name('admin.question.add');
-         	Route::post('store','Exam\QuestionController@questionStore')->name('admin.question.store');
+         	Route::post('store/{id?}/{question_description_id?}','Exam\QuestionController@questionStore')->name('admin.question.store');
          	Route::get('edit/{id}','Exam\QuestionController@questionEdit')->name('admin.question.edit');
+         	Route::post('edit-show-form','Exam\QuestionController@questionEditShow')->name('admin.question.edit.show');
          	Route::get('show','Exam\QuestionController@show')->name('admin.question.show');
          	Route::post('show-table','Exam\QuestionController@showTable')->name('admin.question.show.table');
          	Route::post('draft-store','Exam\QuestionController@questionDraftStore')->name('admin.question.draft.store');

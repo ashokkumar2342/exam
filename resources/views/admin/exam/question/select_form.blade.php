@@ -50,13 +50,13 @@
 <div class="col-md-3">
   <div class="form-group" >
     @php
-      $value=count(@$question['option']);
+      $value=count(@$question['options']);
       if($value==0){
         $value=4;
       } 
     @endphp
       <label>Question Type</label>
-      <select name="question_type" button-click="" editor_question="{{ $value }}" id="question_type" class="form-control" onchange="callAjax(this,'{{ route('admin.question.type') }}'+'?id='+this.value+'&option={{ @$question['id']}}','question_type_result')"> 
+      <select name="question_type" button-click="" editor_question="{{ $value }}" id="question_type" class="form-control" onchange="callAjax(this,'{{ route('admin.question.type') }}'+'?id='+this.value+'&question_id={{ @$question['id']}}','question_type_result')"> 
         <option value="" selected disabled>Select Question Type</option>
         @foreach ($questionTypes  as $questionType)
            <option value="{{ $questionType->id }}" {{ @$question['question_type_id']==$questionType->id?'selected':'' }}>{{ $questionType->name }}</option>
