@@ -50,10 +50,14 @@
 <div class="col-md-3">
   <div class="form-group" >
     @php
+    if (empty($question['options'])){
+       $value=4;
+    }else{
       $value=count(@$question['options']);
       if($value==0){
         $value=4;
       } 
+    } 
     @endphp
       <label>Question Type</label>
       <select name="question_type" button-click="" editor_question="{{ $value }}" id="question_type" class="form-control" onchange="callAjax(this,'{{ route('admin.question.type') }}'+'?id='+this.value+'&question_id={{ @$question['id']}}','question_type_result')"> 
