@@ -1,3 +1,13 @@
+  @php
+  if (empty($question['options'])){
+     $no_of_option=4;
+  }else{
+    $no_of_option=count(@$question['options']);
+    if($no_of_option==0){
+      $no_of_option=4;
+    } 
+  } 
+  @endphp
   @if (empty($question['options']))
   <div class="input_fields_wrap"> 
     @foreach ([0,1,2,3] as $key=>$value)
@@ -60,7 +70,7 @@
     var wrapper         = $(".input_fields_wrap"); //Fields wrapper
     var add_button      = $(".add_field_button"); //Add button ID
     
-    var x = {{ count($question['options']) }}; //initlal text box count
+    var x = {{ $no_of_option }}; //initlal text box count
     $(add_button).click(function(e){ //on add input button click
         e.preventDefault();
         if(x < max_fields){ //max input box allowed
