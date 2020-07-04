@@ -158,7 +158,8 @@ class QuestionController extends Controller
         }
     }
     public function questionStore(Request $request,$id='')
-    {   $id=Crypt::decrypt($id);
+    {   
+      $id=Crypt::decrypt($id);
         try {
           $rules=[
            'class' => 'required',             

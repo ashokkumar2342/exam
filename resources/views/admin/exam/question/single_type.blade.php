@@ -28,7 +28,7 @@
    <div class="input_fields_wrap"> 
     @foreach ($question['options'] as $key=>$option) 
            <div id="div_{{ $key+1 }}">
-            <input type="radio" id="answer" name="correct_answer" value="{{ $key+1 }}" {{ $option['is_correct_ans']==$key+1?'checked':'' }}> 
+            <input type="radio" id="answer" name="correct_answer" value="{{ $key+1 }}" {{ $option['is_correct_ans']==1?'checked':'' }}> 
             <input type="hidden" id="otion_id" name="option_id[]" value="{{ $option['id'] }}" {{ $option['is_correct_ans']==$key+1?'checked':'' }}> 
             <label> {{ $key+1 }}. Correct Answer</label>
             <label style="padding-left:10px"> Marking</label>
