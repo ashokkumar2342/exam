@@ -252,7 +252,10 @@ Route::group(['middleware' => 'admin'], function() {
          	Route::get('topic-add-form','Exam\QuestionController@topicForm')->name('admin.topic.list');    
          	Route::get('topic-select-box','Exam\QuestionController@topicSelectBox')->name('admin.topic.select.box');
          	Route::get('question-type','Exam\QuestionController@questionType')->name('admin.question.type');    
-         	Route::post('topic-add','Exam\QuestionController@storeTopic')->name('admin.topic.add');    
+         	Route::post('topic-add','Exam\QuestionController@storeTopic')->name('admin.topic.add');  
+
+         	Route::get('verify','Exam\QuestionController@questionForm')->name('admin.question.verify');  
+         	Route::post('verify-store/{id?}','Exam\QuestionController@questionVerifyStore')->name('admin.question.verify.store');  
  		});   
             
             

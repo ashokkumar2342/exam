@@ -232,6 +232,41 @@ class QuestionController extends Controller
            return view('error.home'); 
         }
     }
+    public function questionVerifyStore(Request $request,$id='')
+    {
+       try { 
+        $id=Crypt::decrypt($id);
+        $question =Question::find($id); 
+        if ($request->has('need_correction')) {
+            $question->status=2;  
+            $question->remarks=$request->remarks;  
+        }else{
+           $question->status=1;  
+           $question->verify_by=Auth::guard('admin')->user()->id; 
+           $question->verify_at=date('Y-m-d'); 
+          
+        }
+         $question->save();  
+         if ($request->has('need_correction')) {
+         $response['msg'] = 'Need Correction Successfully';
+         }else{
+           $response['msg'] = 'Save Successfully';  
+         }
+         $response['status'] = 1;
+         return response()->json($response);
+       
+       } catch (Exception $e) {
+         
+       }
+    } 
+    public function questionVerify()
+    {
+       try {
+         return view('admin.exam.question.verify');
+       } catch (Exception $e) {
+         
+       }
+    }
     public function questionDraftStore(Request $request){
         try { 
               $ins =array();

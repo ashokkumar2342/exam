@@ -555,6 +555,9 @@ function changeAt(obj){
 	}
 	
 }
+function change_name(id,val) {
+	$("#"+id).prop('value', val);
+}
 
 function showHideDiv(val,divName)
 {  

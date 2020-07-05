@@ -41,7 +41,10 @@
         
       @endforeach
       </div> 
-      <button  id="btn_remove" class="remove_field btn btn-danger btn-xs">Remove</button>
+      @if (app('router')->getRoutes()->match(app('request')->create(url()->previous()))->getName()=='admin.question.verify') 
+      @else
+       <button  id="btn_remove" class="remove_field btn btn-danger btn-xs">Remove</button>
+      @endif
    @else 
    <div class="input_fields_wrap"> 
     @foreach ($question['options'] as $key=>$value) 
@@ -58,11 +61,18 @@
         
       @endforeach
       </div> 
-      <button  id="btn_remove" class="remove_field btn btn-danger btn-xs">Remove</button>   
+      @if (app('router')->getRoutes()->match(app('request')->create(url()->previous()))->getName()=='admin.question.verify') 
+      @else
+       <button  id="btn_remove" class="remove_field btn btn-danger btn-xs">Remove</button>
+      @endif
+         
   @endif
   
- 
- <button class="add_field_button pull-right btn btn-success btn-xs" id="add_field_button">Add More Fields</button>
+ @if (app('router')->getRoutes()->match(app('request')->create(url()->previous()))->getName()=='admin.question.verify') 
+ @else
+  <button class="add_field_button pull-right btn btn-success btn-xs" id="add_field_button">Add More Fields</button>
+ @endif
+
 <script>
 
 	$(document).ready(function() { 

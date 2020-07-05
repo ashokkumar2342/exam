@@ -10,7 +10,7 @@
               <form action="{{ route('admin.question.edit.show') }}" success-content-id="question_form_field_div" method="post" class="add_form" no-reset="true" accept-charset="utf-8" select-triger="subject,question_type" editor-show="question,solution"> 
                 {{ csrf_field() }}
               <div class="col-lg-2">
-                  <h3 class="box-title">Question Edit Id</h3>
+                  <h3 class="box-title">Question  Id</h3>
               </div>
               <div class="col-lg-4">
                 <input type="number" name="question_id" class="form-control">
@@ -24,7 +24,11 @@
             <!-- /.box-header -->
             <div class="box-body">
              <div id="question_form_field_div">
-               @include('admin.exam.question.form_field')
+              @if ('admin.question.verify'==Route::currentRouteName())
+              @else 
+               @include('admin.exam.question.form_field') 
+              @endif
+             
              </div>
            
               
