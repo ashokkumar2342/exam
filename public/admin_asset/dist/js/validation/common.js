@@ -212,6 +212,7 @@ function callJqueryDefault(divId){
 		}
 		if(formObj.getAttribute('editor-show')!="")
 		{  
+			if(formObj.getAttribute('editor-show') !=null){
 			var myStr = formObj.getAttribute('editor-show');
     	    var strArray = myStr.split(",");
     
@@ -233,6 +234,7 @@ function callJqueryDefault(divId){
         		});
         		 
        		 } 
+       		}
 		}
 		if(formObj.getAttribute('call-jquery-default')!=""){
 					callJqueryDefault(formObj.getAttribute('call-jquery-default'));

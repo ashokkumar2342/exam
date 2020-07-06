@@ -60,7 +60,7 @@
     } 
     @endphp
       <label>Question Type</label>
-      <select name="question_type" button-click="" editor_question="{{ $value }}" id="question_type" class="form-control" onchange="callAjax(this,'{{ route('admin.question.type') }}'+'?id='+this.value+'&question_id={{ @$question['id']}}','question_type_result')"> 
+      <select name="question_type" button-click="" editor_question="{{ $value }}" id="question_type" class="form-control" onchange="questionTypeChange(this)"> 
         <option value="" selected disabled>Select Question Type</option>
         @foreach ($questionTypes  as $questionType)
            <option value="{{ $questionType->id }}" {{ @$question['question_type_id']==$questionType->id?'selected':'' }}>{{ $questionType->name }}</option>
@@ -69,3 +69,22 @@
       </select>
   </div> 
 </div>
+
+<script>
+ function questionTypeChange(obj){
+  if (obj.value==4) {
+    $(obj).attr('editor_question',1);
+    callAjax(obj,'{{ route('admin.question.type') }}'+'?id='+obj.value+'&question_id={{ @$question['id']}}','question_type_result')
+  }else{
+    if ( {{ $value }} < 2) {
+      $(obj).attr('editor_question',4);
+     callAjax(obj,'{{ route('admin.question.type') }}'+'?id='+obj.value+'&question_id={{ @$question['id']}}','question_type_result')
+    }else{
+      $(obj).attr('editor_question',{{ $value }});
+     callAjax(obj,'{{ route('admin.question.type') }}'+'?id='+obj.value+'&question_id={{ @$question['id']}}','question_type_result')
+    }
+    
+  }
+     
+  }
+</script>

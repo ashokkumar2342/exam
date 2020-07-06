@@ -152,7 +152,7 @@ function callAjax(obj,url,divId,callback){
 		 		}    
 			 
 			}
-			if(obj.getAttribute('editor-show')!="")
+			if(obj.getAttribute('editor-show')!=null)
 			{  
 				var myStr = obj.getAttribute('editor-show');
 	    	    var strArray = myStr.split(",");

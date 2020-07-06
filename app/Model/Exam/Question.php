@@ -27,6 +27,7 @@ class Question extends Model
     		return  $query=$this->join('question_descriptions', 'question_descriptions.question_id', '=', 'questions.id') 
     							->where('questions.id',$id)
     							->with('options')
+                                ->selectRaw('questions.*,question_descriptions.id as question_description_id,question_descriptions.question_id,question_descriptions.class_id,question_descriptions.subject_id,question_descriptions.section_id,question_descriptions.topic_id,question_descriptions.difficulty_level_id')
     							->first();
     	} catch (Exception $e) {
     		return $r;	

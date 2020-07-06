@@ -158,7 +158,7 @@ class QuestionController extends Controller
         }
     }
     public function questionStore(Request $request,$id='')
-    {   
+    {    
       $id=Crypt::decrypt($id);
         try {
           $rules=[
@@ -200,6 +200,14 @@ class QuestionController extends Controller
             $questionDescription->topic_id=$request->topic;
             $questionDescription->difficulty_level_id=$request->difficulty_level; 
             $questionDescription->save(); 
+          }else{
+            $questionDescription =QuestionDescription::where('question_id',$id)->update([
+              'class_id'=>$request->class,
+              'subject_id'=>$request->subject,
+              'section_id'=>$request->section,
+              'topic_id'=>$request->topic,
+              'difficulty_level_id'=>$request->difficulty_level
+            ]);  
           }
             
             foreach ($request->option as $key => $value) {
@@ -213,6 +221,10 @@ class QuestionController extends Controller
                 if (in_array($key+1, $request->correct_answer)) {
                   $correct_answer =1;
                 }
+              }elseif($request->question_type==4){
+                if ($key+1 ==$request->correct_answer) {
+                  $correct_answer =1;
+                } 
               }
               
               $option->question_id=$question->id;
@@ -332,6 +344,7 @@ class QuestionController extends Controller
         try {  
 
             $user_id =MyFuncs::getUserId();
+            $id =$request->id;
             if (empty($request->question_id)) {  
                $df =QuestionDraft::where(['user_id'=>$user_id])->first(); 
                if (!empty($df)) {
@@ -346,11 +359,22 @@ class QuestionController extends Controller
               $question=$q->getQuestionById($request->question_id);
 
             }
+            $arr=array();
+            if ($id==4) {
+               $arr=[0];
+            }else{
+              $arr=[0,1,2,3];
+            }
+            $data=array();
+            $data['question']=$question;
+            $data['arr']=$arr;
 
-            if ($request->id==1) {
-                return view('admin.exam.question.single_type',compact('question'))->render();
-            }elseif($request->id==2){
-                return view('admin.exam.question.multiple_type',compact('question'))->render();
+            if ($id==1) {
+                return view('admin.exam.question.single_type',$data)->render();
+            }elseif($id==2){
+                return view('admin.exam.question.multiple_type',$data)->render();
+            }elseif($id==4){
+                return view('admin.exam.question.fill_in_the_blank',$data)->render();
             }
              
         } catch (Exception $e) {
