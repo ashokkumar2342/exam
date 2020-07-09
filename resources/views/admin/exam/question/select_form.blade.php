@@ -72,7 +72,10 @@
 
 <script>
  function questionTypeChange(obj){
-  if (obj.value==4) {
+  if (obj.value==3) {
+    $(obj).attr('editor_question',2);
+    callAjax(obj,'{{ route('admin.question.type') }}'+'?id='+obj.value+'&question_id={{ @$question['id']}}','question_type_result')
+  }else if (obj.value==4) {
     $(obj).attr('editor_question',1);
     callAjax(obj,'{{ route('admin.question.type') }}'+'?id='+obj.value+'&question_id={{ @$question['id']}}','question_type_result')
   }else{

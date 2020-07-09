@@ -80,8 +80,8 @@
    }
    $("#subject").trigger('change');
    $("#question_type").trigger('change');
-   setInterval(function() {
-      $('#btn_draft').click();
-   }, 60 * 1000); // 60 * 1000 milsec
+   // setInterval(function() {
+   //    $('#btn_draft').click();
+   // }, 60 * 1000);  
  </script>
 @endpush

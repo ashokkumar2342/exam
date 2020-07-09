@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Exam;
 use App\Helper\MyFuncs;
 use App\Http\Controllers\Controller;
 use App\Model\Exam\DifficultyLevel;
+use App\Model\Exam\Marking;
 use App\Model\Exam\Option;
 use App\Model\Exam\Question;
 use App\Model\Exam\QuestionDescription;
@@ -170,9 +171,12 @@ class QuestionController extends Controller
            'question_type' => 'required',  
            'title' => 'required',  
            'question' => 'required',  
-           'correct_answer' => 'required',  
-           "option.*"  => "required",  
           ]; 
+          if ($request->question_type != 7) {
+           $rules['correct_answer']='required';
+           $rules['option.*']='required';
+          }
+         
           $validator = Validator::make($request->all(),$rules);
           if ($validator->fails()) {
               $errors = $validator->errors()->all();
@@ -209,7 +213,12 @@ class QuestionController extends Controller
               'difficulty_level_id'=>$request->difficulty_level
             ]);  
           }
-            
+          if ($request->question_type==7) {
+              $marking =Marking::firstOrNew(['question_id'=>$id]); 
+              $marking->question_id =$question->id;
+              $marking->marking =$request->marking;
+              $marking->save(); 
+          }else{
             foreach ($request->option as $key => $value) {
               $option = Option::firstOrNew(['id'=>$request->option_id[$key]]);
               $correct_answer =0;
@@ -221,6 +230,10 @@ class QuestionController extends Controller
                 if (in_array($key+1, $request->correct_answer)) {
                   $correct_answer =1;
                 }
+              }elseif($request->question_type==3){
+                if ($key+1 ==$request->correct_answer) {
+                   $correct_answer =1;
+                } 
               }elseif($request->question_type==4){
                 if ($key+1 ==$request->correct_answer) {
                   $correct_answer =1;
@@ -233,6 +246,9 @@ class QuestionController extends Controller
               $option->marking=$request->marking[$key]; 
               $option->save();
             }
+          }
+            
+            
              
           $this->questionDraftUpdate($request);
           $response=array();  
@@ -279,6 +295,37 @@ class QuestionController extends Controller
          
        }
     }
+    public function questionOptionDraftUpdate(){
+      try {
+          $user_id =Auth::guard('admin')->user()->id; 
+          $df =QuestionDraft::where(['user_id'=>$user_id])->first(); 
+          if (!empty($df)) {
+             $request =(array) json_decode($df->json);
+             $ins =array();  
+             $ins['question_type_id']=$request['question_type_id'];  
+             $ins['details']=$request['details']; 
+             $ins['title']=$request['title']; 
+             $ins['solution']=$request['solution']; 
+             $ins['video_url']=$request['video_url'];   
+             $ins['class_id']=$request['class_id']; 
+             $ins['subject_id']=$request['subject_id']; 
+             $ins['section_id']=$request['section_id']; 
+             $ins['topic_id']=$request['topic_id'];
+             $ins['difficulty_level_id']=$request['difficulty_level_id']; 
+             $ins['options']=[]; 
+             $ins['marking']=$request['marking']; 
+             $ins['is_correct_ans']=$request['is_correct_ans']; 
+              
+             
+             $draft =QuestionDraft::firstOrNew(['user_id'=>$user_id]);
+             $draft->json=json_encode($ins); 
+             $draft->save();
+          } 
+           
+      } catch (Exception $e) {
+        
+      }
+    }
     public function questionDraftStore(Request $request){
         try { 
               $ins =array();
@@ -320,11 +367,17 @@ class QuestionController extends Controller
               $ins['section_id']=$request->section; 
               $ins['topic_id']=$request->topic;
               $ins['difficulty_level_id']=$request->difficulty_level;
-              $option=array(); 
-              foreach ($request->option as $key => $value) {
-                 $option[]=null;
+              if ($request->question_type==7) {
+                
+              }else{
+                $option=array(); 
+                foreach ($request->option as $key => $value) {
+                   $option[]=null;
+                  $ins['options']=$option;
+                }
               }
-              $ins['options']=$option; 
+             
+              
               $ins['marking']=null;  
               $ins['is_correct_ans']=null; 
 
@@ -365,6 +418,7 @@ class QuestionController extends Controller
             }else{
               $arr=[0,1,2,3];
             }
+            // $this->questionOptionDraftUpdate();
             $data=array();
             $data['question']=$question;
             $data['arr']=$arr;
@@ -373,8 +427,12 @@ class QuestionController extends Controller
                 return view('admin.exam.question.single_type',$data)->render();
             }elseif($id==2){
                 return view('admin.exam.question.multiple_type',$data)->render();
+            }elseif($id==3){
+                return view('admin.exam.question.true_false',$data)->render();
             }elseif($id==4){
                 return view('admin.exam.question.fill_in_the_blank',$data)->render();
+            }elseif($id==7){
+                return view('admin.exam.question.subjective',$data)->render();
             }
              
         } catch (Exception $e) {
