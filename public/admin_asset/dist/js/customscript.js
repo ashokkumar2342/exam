@@ -151,6 +151,27 @@ function callAjax(obj,url,divId,callback){
 		  			}); 
 		 		}    
 			 
+			}	
+			if(obj.getAttribute('editor_question_right')!="")
+			{  
+				numberOfOption=obj.getAttribute('editor_question_right');	
+			 CKEDITOR.config.toolbar_Full =
+			     [
+			     { name: 'document', items : [ 'Source'] },
+			     { name: 'clipboard', items : [ 'Cut','Copy','Paste','-','Undo','Redo' ] },
+			     { name: 'editing', items : [ 'Find'] },
+			     { name: 'basicstyles', items : [ 'Bold','Italic','Underline'] },
+			     { name: 'paragraph', items : [ 'JustifyLeft','JustifyCenter','JustifyRight'] }
+			     ];
+			  	for(var i = 1; i <= numberOfOption; i++){
+		  			CKEDITOR.replace('option_right_'+i, { height: 100 });
+		  			CKEDITOR.plugins.addExternal('divarea', '../extraplugins/divarea/', 'plugin.js'); 
+		  			CKEDITOR.replace('option_right_'+i, {
+		  			     extraPlugins: 'base64image,divarea,ckeditor_wiris',
+		  			     language: 'en'
+		  			}); 
+		 		}    
+			 
 			}
 			if(obj.getAttribute('editor-show')!=null)
 			{  
