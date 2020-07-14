@@ -239,7 +239,7 @@ class QuestionController extends Controller
              $OptionRightSide->question_id=$question->id;
              $OptionRightSide->description=$request->option_right[$key];
              $OptionRightSide->save();
-             $matchAnswer=new MatchAnswer();
+             $matchAnswer=MatchAnswer::firstOrNew(['id'=>$request->match_answer_id[$key]]);
              $matchAnswer->question_id=$question->id;
              $matchAnswer->option_left_side_id=$request->correct_answer_left[$key]; 
              $matchAnswer->option_right_side_id=$request->$correct_answer_right;
@@ -458,6 +458,10 @@ class QuestionController extends Controller
                }
             
                 
+            }elseif($id==5){
+              $q =new Question(); 
+            $question=$q->getQuestionMatricById($request->question_id);
+
             }else{
               $q =new Question(); 
               $question=$q->getQuestionById($request->question_id);

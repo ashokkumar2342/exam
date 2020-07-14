@@ -36,10 +36,10 @@
    		     @endforeach
    		   </div> 
    		  @elseif(!empty($question['id']))
-   		  <div class="input_fields_wrap"> 
-   		   @foreach ($question['options'] as $key=>$option) 
-   		          <div id="div_{{ $key+1 }}"> 
-   		           <input type="hidden" id="otion_id" name="option_id[]" value="{{ $option['id'] }}" {{ $option['is_correct_ans']==$key+1?'checked':'' }}> 
+   		  <div class="input_fields_wrap">  
+   		   @foreach ($question['optionLeftSides'] as $key=>$option) 
+   		          <div id="div_{{ $key+1 }}">  
+                  <input type="hidden" id="otion_id" name="option_id[]" value="{{ $option['id'] }}"> 
    		           <label> {{ $char }}. </label> 
    		           <div> <textarea class="ckeditor" id="option_{{ $key+1 }}" name="option[]">{{ $option['description'] }}</textarea></div>
    		           
@@ -99,9 +99,9 @@
    			   </div> 
    			  @elseif(!empty($question['id']))
    			  <div class="input_fields_wrap_right"> 
-   			   @foreach ($question['options'] as $key=>$option) 
-   			          <div id="div_{{ $key+1 }}"> 
-   			           <input type="hidden" id="otion_id" name="option_right_id[]" value="{{ $option['id'] }}" {{ $option['is_correct_ans']==$key+1?'checked':'' }}> 
+   			   @foreach ($question['optionRightSides'] as $key=>$option) 
+   			          <div id="div_{{ $key+1 }}">  
+                    <input type="hidden" id="otion_right_id" name="option_right_id[]" value="{{ $option['id'] }}">
    			           <label> {{ $right_char }}. </label> 
    			           <div> <textarea class="ckeditor" id="option_right_{{ $key+1 }}" name="option_right[]">{{ $option['description'] }}</textarea></div> 
    			           <br>
@@ -149,35 +149,53 @@
    			<tbody>
           @php
           $left_char ='A';
+          $l=0;
          
             if (empty($question['correct_answer_left'])) {
               $correct_answer_left=count([0,1,2,3]);
+            }elseif(!empty($question['id'])){
+              $correct_answer_left=count($question['MatchAnswers']);
             }else{
               $correct_answer_left=count($question['correct_answer_left']);
             }
           @endphp
    				@for ($i=1;$i <= $correct_answer_left;$i++)
+          @php
+             $right_char ='P';
+             $k=0; 
+          @endphp
    				<tr class="tr_clone" id="{{ $i }}"> 	
    						<td class="td_clone" id="td_clone_{{ $i }}">
    							<input type="hidden" name="correct_answer_left[]" value="{{ $i }}">
-   						{{ $left_char}}
-   						</td>
-              @php
-                 $right_char ='P';
-              @endphp
+                @if (!empty($question['id']))
+                   <input type="hidden" name="match_answer_id[]" value="{{ @$question['MatchAnswers'][$l]->id }}">
+                @endif
+   						{{ $left_char}}  
+   						</td> 
 	   					@for ($j=1; $j <= $correct_answer_left;$j++ )
-	   						 <td class="td_clone" id="td_clone_{{ $j }}">
-	   						 	 <input type="radio" id="correct_answer_right_{{ $j }}" name="correct_answer_right_{{ $i }}"   value="{{ $j }}" {{ $j==@$question['correct_answer_right_'.$i]?'checked':'' }}>
-  								<label>{{ $right_char }}</label>
+	   						 <td class="td_clone" id="td_clone_{{ $j }}"> 
+	   						 	 <input type="radio" id="correct_answer_right_{{ $j }}" name="correct_answer_right_{{ $i }}"   value="{{ $j }}" 
+                   @if (!empty($question['id']))
+
+                    {{ $i==@$question['MatchAnswers'][$k]->option_right_side_id?'checked':'' }}
+                    @else
+                    {{ $j==@$question['correct_answer_right_'.$i]?'checked':'' }}
+                   @endif
+                   
+
+                   >
+  								<label>{{ $right_char }}  </label>
 	   						 
 	   						</td>
                 @php
                   $right_char++;
+                  $k++;
                 @endphp
 	   					@endfor 
    				</tr>
             @php
               $left_char++;
+              $l++;
             @endphp
    				@endfor
    			</tbody>
