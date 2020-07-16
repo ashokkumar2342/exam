@@ -145,60 +145,6 @@
    </div>
 
    <div class="col-lg-12">
-    @php
-      $left_char ='A';
-      $l=0;
-     
-        if (empty($question['id'])) {
-          if (!empty($question['options'])) {
-            $correct_answer_left=count($question['options']);
-          }else{
-            $correct_answer_left=count([0,1,2,3]);
-          }
-          
-        }elseif(!empty($question['id'])){  
-          $correct_answer_left=count($question['MatchAnswers']);
-        }else{
-          $correct_answer_left=count($question['correct_answer_left']);
-        } 
-      @endphp
-           
-      
-    {{-- <table class="table table-bordered no-margin" id="correct_table"> 
-      <tbody> 
-        @foreach ($question->OptionLeftSides as $key=>$OptionLeftSide)
-           <tr class="tr_clone" id="{{ $l }}">   
-               <td class="td_clone" id="td_clone_{{ $l }}">
-                 <input type="hidden" name="correct_answer_left[]" value="{{ $l }}">
-                 @if (!empty($question['id']))
-                    <input type="hidden" name="match_answer_id[]" value="{{ @$question['MatchAnswers'][$l]->id }}">
-                 @endif
-               {{ $left_char}}    
-               </td> 
-               @php
-                  $right_char ='P';
-                  $k=0; 
-                   $right_side_id=$question['MatchAnswers'][$key]->option_right_side_id;
-               @endphp
-               @foreach ($question->OptionRightSides as $key_right=>$OptionRightSide)
-
-                  <td class="td_clone" id="td_clone_{{ $key+1 }}"> 
-                    <input type="radio" id="correct_answer_right_{{ $key+1 }}" name="correct_answer_right_{{ $key+1 }}"   value="{{ $OptionRightSide->id}}"  
-                       {{ $OptionRightSide->id==$right_side_id?'checked':'' }} 
-                    >
-                   <label>{{ $right_char }}   </label>
-                  
-                 </td>
-                 @php
-                   $right_char++;
-                   $k++;
-                 @endphp
-               @endforeach 
-           </tr> 
-        @endforeach
-        
-      </tbody>
-    </table> --}}
    		<table class="table table-bordered no-margin" id="correct_table"> 
    			<tbody>
           @php
@@ -233,12 +179,14 @@
    						</td> 
 	   					@for ($j=1; $j <= $correct_answer_left;$j++ )
 	   						 <td class="td_clone" id="td_clone_{{ $j }}"> 
-	   						 	 <input type="radio" id="correct_answer_right_{{ $j }}" name="correct_answer_right_{{ $i }}"   value="{{ $j }}" 
+	   						 	 <input type="checkbox" id="correct_answer_right_{{ $j }}" name="correct_answer_right_{{ $i }}[]"    value="{{ $j }}" 
                    @if (!empty($question['id']))
 
-                    {{ $i==@$question['MatchAnswers'][$k]->option_right_side_id?'checked':'' }}
+                    
+                    @elseif(!empty(@$question['MatchAnswers'][$l]->id)) 
+                    {{ in_array($j, @$question['correct_answer_right_'.$i])?'checked':'' }}
                     @else
-                    {{ $j==@$question['correct_answer_right_'.$i]?'checked':'' }}
+
                    @endif
                    
 

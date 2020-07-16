@@ -52,6 +52,8 @@
     @php
     if (empty($question['options'])){
        $value=4;
+    }elseif(!empty($question['MatchAnswers'])){
+      $value=count($question['MatchAnswers']);
     }else{
       $value=count(@$question['options']);
       if($value==0){
@@ -79,6 +81,17 @@
     $(obj).attr('editor_question',1);
     callAjax(obj,'{{ route('admin.question.type') }}'+'?id='+obj.value+'&question_id={{ @$question['id']}}','question_type_result')
   }else if (obj.value==5) {
+      if({{ $value }}==0){
+        $(obj).attr('editor_question',4);
+        $(obj).attr('editor_question_right',4);
+        callAjax(obj,'{{ route('admin.question.type') }}'+'?id='+obj.value+'&question_id={{ @$question['id']}}','question_type_result')
+      }else{
+        $(obj).attr('editor_question',{{ $value }});
+        $(obj).attr('editor_question_right',{{ $value }});
+        callAjax(obj,'{{ route('admin.question.type') }}'+'?id='+obj.value+'&question_id={{ @$question['id']}}','question_type_result')
+      }
+    
+  }else if (obj.value==6) {
       if({{ $value }}==0){
         $(obj).attr('editor_question',4);
         $(obj).attr('editor_question_right',4);

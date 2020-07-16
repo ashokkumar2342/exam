@@ -48,7 +48,7 @@ class QuestionController extends Controller
             $data['manageSections']=$manageSections;  
             $data['classes']=$classes;  
             $data['difficultyLevels']=$difficultyLevels;  
-            return view('admin.exam.question.show',$data); 
+            return view('admin.exam.report.show',$data); 
         } catch (Exception $e) {
             
         }
@@ -69,7 +69,29 @@ class QuestionController extends Controller
              $data['questions']=$questions;
              $response=array();
              $response['status']=1;
-             $response['data']=view('admin.exam.question.question_table',$data)->render(); 
+             $response['data']=view('admin.exam.report.question_table',$data)->render(); 
+             return  $response; 
+        } catch (Exception $e) {
+            
+        }
+    }
+    public function showPrint(Request $request)
+    {
+        try {
+             $question =new Question(); 
+             $arr=array();
+             $data=array();
+             $arr['question_type_id']=$request->question_type; 
+             $arr['class_id']=$request->class; 
+             $arr['subject_id']=$request->subject; 
+             $arr['section_id']=$request->section; 
+             $arr['topic_id']=$request->topic;  
+             $arr['difficulty_level_id']=$request->difficulty_level; 
+             $questions=$question->getResult($arr);  
+             $data['questions']=$questions;
+             $response=array();
+             $response['status']=1;
+             $response['data']=view('admin.exam.report.question_type_report_1',$data)->render(); 
              return  $response; 
         } catch (Exception $e) {
             
@@ -176,7 +198,7 @@ class QuestionController extends Controller
            'title' => 'required',  
            'question' => 'required',  
           ]; 
-          if ($request->question_type != 7 && $request->question_type != 5) {
+          if ($request->question_type != 7 && $request->question_type != 5 && $request->question_type != 6) {
            $rules['correct_answer']='required';
            $rules['option.*']='required';
           }
@@ -222,7 +244,7 @@ class QuestionController extends Controller
               $marking->question_id =$question->id;
               $marking->marking =$request->marking;
               $marking->save(); 
-          }elseif($request->question_type==5){
+          }elseif($request->question_type==5 || $request->question_type==6){
             $marking =MarkingScore::firstOrNew(['question_id'=>$id]); 
             $marking->question_id =$question->id;
             $marking->correct =$request->correct_marking;
@@ -231,20 +253,40 @@ class QuestionController extends Controller
             foreach ($request->option as $key => $value) { 
                 $newid=$key+1;
              $correct_answer_right = 'correct_answer_right_'.$newid; 
-             $optionLeftSide= OptionLeftSide::firstOrNew(['id'=>$request->option_id[$key]]);
+             if (!empty($request->option_id[$key])) {
+                 $option_id=$request->option_id[$key];
+                 $option_right_id=$request->option_right_id[$key];
+                 $match_answer_id=$request->match_answer_id[$key];
+             }else{
+                $option_id=null;
+                $option_right_id=null;
+                $match_answer_id=null;
+             }
+             $optionLeftSide= OptionLeftSide::firstOrNew(['id'=>$option_id]);
              $optionLeftSide->question_id=$question->id;
              $optionLeftSide->description=$value;
              $optionLeftSide->save();
-             $OptionRightSide=OptionRightSide::firstOrNew(['id'=>$request->option_right_id[$key]]);
+             $OptionRightSide=OptionRightSide::firstOrNew(['id'=>$option_right_id]);
              $OptionRightSide->question_id=$question->id;
              $OptionRightSide->description=$request->option_right[$key];
              $OptionRightSide->save();
-             $matchAnswer=MatchAnswer::firstOrNew(['id'=>$request->match_answer_id[$key]]);
-             $matchAnswer->question_id=$question->id;
-             $matchAnswer->option_left_side_id=$request->correct_answer_left[$key]; 
-             $matchAnswer->option_right_side_id=$request->$correct_answer_right;
+             if ($request->question_type==5) {
+                $matchAnswer=MatchAnswer::firstOrNew(['id'=>$match_answer_id]);
+                $matchAnswer->question_id=$question->id;
+                $matchAnswer->option_left_side_id=$request->correct_answer_left[$key]; 
+                $matchAnswer->option_right_side_id=$request->$correct_answer_right;
+                $matchAnswer->save(); 
+             }else{ 
+                foreach ($request->$correct_answer_right as $right_key => $right_value) {
+                $matchAnswer=MatchAnswer::firstOrNew(['id'=>$match_answer_id]);
+                $matchAnswer->question_id=$question->id;
+                $matchAnswer->option_left_side_id=$request->correct_answer_left[$key]; 
+                $matchAnswer->option_right_side_id=$right_value; 
+                $matchAnswer->save(); 
+                }
+                
+             }
              
-             $matchAnswer->save();
             }
           }else{
             foreach ($request->option as $key => $value) {
@@ -381,6 +423,18 @@ class QuestionController extends Controller
                     $ins['correct_answer_right_'.$newid]=$request->$correct_answer_right;
                   }
                 
+              }elseif ($request->question_type==6) {
+                  $ins['options_right']=$request->option_right; 
+                  $ins['correct']=$request->correct_marking;
+                  $ins['wrong']=$request->wrong_marking;
+                  $ins['correct_answer_left']=$request->correct_answer_left; 
+                  $ins['correct_answer_right']=$request->correct_answer_right; 
+                  foreach ($request->option as $key => $value) {
+                    $newid =$key+1;
+                    $correct_answer_right ='correct_answer_right_'.$newid; 
+                    $ins['correct_answer_right_'.$newid]=$request->$correct_answer_right;
+                  }
+                
               }
 
               $user_id =Auth::guard('admin')->user()->id; 
@@ -460,8 +514,11 @@ class QuestionController extends Controller
                 
             }elseif($id==5){
               $q =new Question(); 
-            $question=$q->getQuestionMatricById($request->question_id);
-
+              $question=$q->getQuestionMatricById($request->question_id); 
+            }elseif($id==6){
+              $q =new Question(); 
+              $question=$q->getQuestionMatricById($request->question_id); 
+              $matchAnswers=$q->getMatchAnswerByQuestionId($request->question_id); 
             }else{
               $q =new Question(); 
               $question=$q->getQuestionById($request->question_id);
@@ -488,6 +545,8 @@ class QuestionController extends Controller
                 return view('admin.exam.question.fill_in_the_blank',$data)->render();
             }elseif($id==5){
                 return view('admin.exam.question.single_correct_matrix',$data)->render();
+            }elseif($id==6){
+                return view('admin.exam.question.multiple_correct_matrix',$data)->render();
             }elseif($id==7){
                 return view('admin.exam.question.subjective',$data)->render();
             }

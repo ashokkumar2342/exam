@@ -13,7 +13,10 @@ class Question extends Model
 	
     function getResult($arr){
     	try {
-    		return  $query=$this->where('class_id',$arr['class_id'])->get();
+    		return  $query=$this->join('question_descriptions', 'question_descriptions.question_id', '=', 'questions.id')  
+                            ->with('options')
+                            ->selectRaw('questions.*,question_descriptions.id as question_description_id,question_descriptions.question_id,question_descriptions.class_id,question_descriptions.subject_id,question_descriptions.section_id,question_descriptions.topic_id,question_descriptions.difficulty_level_id')
+                            ->get();
     	} catch (Exception $e) {
     		return $r;	
     	}
@@ -67,6 +70,17 @@ class Question extends Model
                 ->with('MatchAnswers')
                 ->selectRaw('questions.*,question_descriptions.id as question_description_id,question_descriptions.question_id,question_descriptions.class_id,question_descriptions.subject_id,question_descriptions.section_id,question_descriptions.topic_id,question_descriptions.difficulty_level_id,marking_scores.correct,marking_scores.wrong')
                 ->first();
+        } catch (Exception $e) {
+            return $r;  
+        }
+    }
+    function getMatchAnswerByQuestionId($id){
+        try {
+            return  $query=$this->join('match_answers', 'match_answers.question_id', '=','questions.id') 
+                ->where('questions.id',$id) 
+                ->select('match_answers.option_right_side_id')
+                ->groupBy('match_answers.option_right_side_id')
+                ->get();
         } catch (Exception $e) {
             return $r;  
         }

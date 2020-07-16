@@ -482,11 +482,16 @@ function searchForm(formObj){
 					 'csv', 'excel', 'pdf', 'print'
 				]
 			});
-		}else if(formObj.getAttribute('toast-msg')=="true"){
+		}else if(formObj.getAttribute('success-content-id')){
+			$('#'+formObj.getAttribute('success-content-id')).html(response.data);
+			 
+		}
+		else if(formObj.getAttribute('toast-msg')=="true"){
 			successMsg(response.msg)
 		}else{
 			$(formObj).append($('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button><strong>Success!</strong> '+response.msg+'</div>'));
 		}
+		
 
 		if(formObj.getAttribute('content-refresh') && response.status==1)
 		{	

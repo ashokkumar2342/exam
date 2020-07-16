@@ -245,6 +245,7 @@ Route::group(['middleware' => 'admin'], function() {
          	Route::post('edit-show-form','Exam\QuestionController@questionEditShow')->name('admin.question.edit.show');
          	Route::get('show','Exam\QuestionController@show')->name('admin.question.show');
          	Route::post('show-table','Exam\QuestionController@showTable')->name('admin.question.show.table');
+         	Route::post('show-print','Exam\QuestionController@showPrint')->name('admin.question.show.print');
          	Route::post('draft-store','Exam\QuestionController@questionDraftStore')->name('admin.question.draft.store');
 
 
