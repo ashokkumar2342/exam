@@ -17,12 +17,13 @@
       <td> {!! $question->title !!} </td>
       <td> {!! $question->details !!} </td>
       <td> 
+          
       	@if ($question->status==0)
-      	 <span class="label label-info">Draft</span> 
+      	 <span class="label label-info">Pending</span> 
       	 @elseif($question->status==1)
-      	 <span class="label label-warning">Pending</span> 
+      	 <span class="label label-warning">Verify</span> 
       	 @elseif($question->status==2)
-      	 <span class="label label-success">Verify</span> 
+      	 <span class="label label-success">Need Correction</span> 
       	@endif
       	
       </td> 

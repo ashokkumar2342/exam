@@ -27,6 +27,7 @@
        folder instead of downloading all of them to reduce the load. -->
   <link rel="stylesheet" href="{{ asset('admin_asset/dist/css/skins/_all-skins.min.css')}}">
   <link rel="stylesheet" href="{{ asset('admin_asset/plugins/multiple-select/css/multi-select.css')}}">
+  <link rel="stylesheet" href="{{ asset('admin_asset/plugins/daterangepicker/daterangepicker.css')}}">
 
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
   <link href="{!! asset('admin_asset/dist/css/bootstrap-multiselect.css') !!}"  rel="stylesheet" type="text/css">
@@ -126,6 +127,8 @@
  <script src={!! asset('admin_asset/dist/js/summernote.js?ver=1') !!}></script>
  <script src={!! asset('admin_asset/dist/js/croppie.js?ver=1') !!}></script>
  <script src={!! asset('admin_asset/dist/js/loader.js') !!}></script>
+{{--  <script src={!! asset('admin_asset/plugins/daterangepicker/daterangepicker.js') !!}></script>
+ <script src={!! asset('admin_asset/plugins/daterangepicker/moment.js') !!}></script> --}}
  <script>window.MathJax = { MathML: { extensions: ["mml3.js", "content-mathml.js"]}};</script>
  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=MML_HTMLorMML"></script>
   <script type="text/javascript" src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>

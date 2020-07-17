@@ -35,7 +35,7 @@ class QuestionController extends Controller
      */
     public function show()
     {
-        try {
+        try { 
             $classes = $sections =MyFuncs::getAllClasses();
             $manageSections =Section::where('status',1)->orderBy('subject_id','ASC')->orderBy('section_id','ASC')->get(); 
             $subjects = SubjectType::orderBy('sorting_order_id','ASC')->get();  
@@ -55,22 +55,39 @@ class QuestionController extends Controller
     }
     public function showTable(Request $request)
     {
-        try {
-             $question =new Question(); 
-             $arr=array();
-             $data=array();
-             $arr['question_type_id']=$request->question_type; 
-             $arr['class_id']=$request->class; 
-             $arr['subject_id']=$request->subject; 
-             $arr['section_id']=$request->section; 
-             $arr['topic_id']=$request->topic;  
-             $arr['difficulty_level_id']=$request->difficulty_level; 
-             $questions=$question->getResult($arr);  
-             $data['questions']=$questions;
-             $response=array();
-             $response['status']=1;
-             $response['data']=view('admin.exam.report.question_table',$data)->render(); 
-             return  $response; 
+      try {
+            $rules=[
+             'from_date' => 'required',             
+             'to_date' => 'required',  
+              
+            ]; 
+            
+            $validator = Validator::make($request->all(),$rules);
+            if ($validator->fails()) {
+                $errors = $validator->errors()->all();
+                $response=array();
+                $response["status"]=0;
+                $response["msg"]=$errors[0];
+                return response()->json($response);// response as json
+            }
+           $question =new Question(); 
+           $arr=array();
+           $data=array();
+           $arr['from_date']=$request->from_date; 
+           $arr['to_date']=$request->to_date; 
+           $arr['status']=$request->status; 
+           $arr['question_type_id']=$request->question_type; 
+           $arr['class_id']=$request->class; 
+           $arr['subject_id']=$request->subject; 
+           $arr['section_id']=$request->section; 
+           $arr['topic_id']=$request->topic;  
+           $arr['difficulty_level_id']=$request->difficulty_level; 
+           $questions=$question->getResult($arr);  
+           $data['questions']=$questions;
+           $response=array();
+           $response['status']=1;
+           $response['data']=view('admin.exam.report.question_table',$data)->render(); 
+           return  $response; 
         } catch (Exception $e) {
             
         }
@@ -78,9 +95,26 @@ class QuestionController extends Controller
     public function showPrint(Request $request)
     {
         try {
+            $rules=[
+             'from_date' => 'required',             
+             'to_date' => 'required',  
+              
+            ]; 
+            
+            $validator = Validator::make($request->all(),$rules);
+            if ($validator->fails()) {
+                $errors = $validator->errors()->all();
+                $response=array();
+                $response["status"]=0;
+                $response["msg"]=$errors[0];
+                return response()->json($response);// response as json
+            }
              $question =new Question(); 
              $arr=array();
              $data=array();
+             $arr['from_date']=$request->from_date; 
+             $arr['to_date']=$request->to_date; 
+             $arr['status']=$request->status; 
              $arr['question_type_id']=$request->question_type; 
              $arr['class_id']=$request->class; 
              $arr['subject_id']=$request->subject; 
