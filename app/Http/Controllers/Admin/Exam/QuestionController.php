@@ -219,7 +219,7 @@ class QuestionController extends Controller
         }
     }
     public function questionStore(Request $request,$id='')
-    {    
+    {   
       $id=Crypt::decrypt($id);
         try {
           $rules=[
@@ -284,17 +284,19 @@ class QuestionController extends Controller
             $marking->correct =$request->correct_marking;
             $marking->wrong =$request->wrong_marking;
             $marking->save(); 
+            $optionLeftSideArrId=array();
+            $optionRightSideArrId=array();
             foreach ($request->option as $key => $value) { 
                 $newid=$key+1;
              $correct_answer_right = 'correct_answer_right_'.$newid; 
              if (!empty($request->option_id[$key])) {
                  $option_id=$request->option_id[$key];
                  $option_right_id=$request->option_right_id[$key];
-                 $match_answer_id=$request->match_answer_id[$key];
+                 
              }else{
                 $option_id=null;
                 $option_right_id=null;
-                $match_answer_id=null;
+               
              }
              $optionLeftSide= OptionLeftSide::firstOrNew(['id'=>$option_id]);
              $optionLeftSide->question_id=$question->id;
@@ -304,24 +306,57 @@ class QuestionController extends Controller
              $OptionRightSide->question_id=$question->id;
              $OptionRightSide->description=$request->option_right[$key];
              $OptionRightSide->save();
-             if ($request->question_type==5) {
-                $matchAnswer=MatchAnswer::firstOrNew(['id'=>$match_answer_id]);
-                $matchAnswer->question_id=$question->id;
-                $matchAnswer->option_left_side_id=$request->correct_answer_left[$key]; 
-                $matchAnswer->option_right_side_id=$request->$correct_answer_right;
-                $matchAnswer->save(); 
-             }else{ 
-                foreach ($request->$correct_answer_right as $right_key => $right_value) {
-                $matchAnswer=MatchAnswer::firstOrNew(['id'=>$match_answer_id]);
-                $matchAnswer->question_id=$question->id;
-                $matchAnswer->option_left_side_id=$request->correct_answer_left[$key]; 
-                $matchAnswer->option_right_side_id=$right_value; 
-                $matchAnswer->save(); 
-                }
+
+             $optionLeftSideArrId[$newid]=$optionLeftSide->id;
+             $optionRightSideArrId[$newid]=$OptionRightSide->id;
+             // if ($request->question_type==5) {
+             //    $matchAnswer=MatchAnswer::firstOrNew(['id'=>$match_answer_id]);
+             //    $matchAnswer->question_id=$question->id;
+             //    $matchAnswer->option_left_side_id=$request->correct_answer_left[$key]; 
+             //    $matchAnswer->option_right_side_id=$request->$correct_answer_right;
+             //    $matchAnswer->save(); 
+             // }elseif($request->question_type==6){ 
+             //    foreach ($request->$correct_answer_right as $right_key => $right_value) {
+             //    $matchAnswer=MatchAnswer::firstOrNew(['id'=>$match_answer_id]);
+             //    $matchAnswer->question_id=$question->id;
+             //    $matchAnswer->option_left_side_id=$request->correct_answer_left[$key]; 
+             //    $matchAnswer->option_right_side_id=$right_value; 
+             //    $matchAnswer->save(); 
+             //    }
                 
-             }
+             // }
              
+            }  
+            $increamentid=0; 
+            foreach ($optionLeftSideArrId as $key => $left_side_id) {
+                $newid=$increamentid+1;
+                $correct_answer_right = 'correct_answer_right_'.$newid; 
+                if (!empty($request->option_id[$increamentid])) { 
+                    $match_answer_id=$request->match_answer_id[$increamentid];
+                }else{ 
+                   $match_answer_id=null;
+                }
+               if ($request->question_type==5) {
+                    $a[]=$match_answer_id;
+                  $matchAnswer=MatchAnswer::firstOrNew(['id'=>$match_answer_id]);
+                  $matchAnswer->question_id=$question->id;
+                  $matchAnswer->option_left_side_id=$left_side_id; 
+                  $matchAnswer->option_right_side_id=$optionRightSideArrId[$request->$correct_answer_right]; 
+                  $matchAnswer->save(); 
+               }elseif($request->question_type==6){ 
+                  foreach ($request->$correct_answer_right as $right_key => $right_value) {
+                  $matchAnswer=MatchAnswer::firstOrNew(['id'=>$match_answer_id]);
+                  $matchAnswer->question_id=$question->id;
+                  $matchAnswer->option_left_side_id=$request->correct_answer_left[$key]; 
+                  $matchAnswer->option_right_side_id=$right_value; 
+                  $matchAnswer->save(); 
+                  }
+                  
+               }  
+               $increamentid++;
             }
+            
+            
           }else{
             foreach ($request->option as $key => $value) {
               $option = Option::firstOrNew(['id'=>$request->option_id[$key]]);
