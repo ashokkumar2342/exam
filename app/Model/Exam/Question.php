@@ -35,7 +35,7 @@ class Question extends Model
                      $query->where('question_descriptions.topic_id',$arr['topic_id']);
                     }if(isset($arr['difficulty_level_id'])){
                      $query->where('question_descriptions.difficulty_level_id',$arr['difficulty_level_id']);
-                    }if(isset($arr['difficulty_level_id'])){
+                    }if(isset($arr['question_type_id'])){
                      $query->where('questions.question_type_id',$arr['question_type_id']);
                     } 
                    return $query->orderBy('id','desc')

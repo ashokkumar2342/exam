@@ -17,7 +17,7 @@
       <td> {!! $question->title !!} </td>
       <td> {!! $question->details !!} </td>
       <td> 
-          
+
       	@if ($question->status==0)
       	 <span class="label label-info">Pending</span> 
       	 @elseif($question->status==1)
@@ -31,3 +31,5 @@
      @endforeach 
   </tbody>
 </table>
+
+

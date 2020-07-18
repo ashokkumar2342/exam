@@ -1,3 +1,14 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Exam</title>
+<!-- Tell the browser to be responsive to screen width -->
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<head>
+  <title></title>
+</head>
+<body>
     <table class="table" id="DivIdToPrint"> 
       <tbody>
         @foreach ($questions as $question)
@@ -27,15 +38,10 @@
     <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=MML_HTMLorMML"></script>
 
  <script>
-    (function() {
-      setTimeout(function(){ 
-        window.print();
-       }, 1000);
-      
-        
-
-    }());
+    window.print();
  </script>
    
  
  
+</body>
+</html>

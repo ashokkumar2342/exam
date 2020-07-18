@@ -174,6 +174,10 @@ function callJqueryDefault(divId){
 			var redirect=formObj.getAttribute('redirect-to');
 			setTimeout(window.location.replace(redirect), 3000);
 			;
+		}if(formObj.getAttribute('mathjax'))
+		{
+			window.MathJax = { MathML: { extensions: ["mml3.js", "content-mathml.js"]}};
+			 
 		}
 
 		if(formObj.getAttribute('display-url') && formObj.getAttribute('display-div'))
