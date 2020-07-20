@@ -177,7 +177,7 @@ function callJqueryDefault(divId){
 		}if(formObj.getAttribute('mathjax'))
 		{
 			window.MathJax = { MathML: { extensions: ["mml3.js", "content-mathml.js"]}};
-			 
+
 		}
 
 		if(formObj.getAttribute('display-url') && formObj.getAttribute('display-div'))
@@ -663,7 +663,10 @@ function thirdurl(formObj){
 			
 	}
 	$('button[type=button],button[type=submit], input[type=submit]').prop('disabled',false);
-    });
+    }).fail(function (jqXHR, textStatus) {
+	 $('button[type=button],button[type=submit], input[type=submit]').prop('disabled',false);
+	 $('.fa-refresh').removeClass('fa-refresh');
+	});
 }
 
 function fourthurl(formObj){

@@ -11,6 +11,7 @@ use App\Model\Exam\MatchAnswer;
 use App\Model\Exam\Option;
 use App\Model\Exam\OptionLeftSide;
 use App\Model\Exam\OptionRightSide;
+use App\Model\Exam\Paragraph;
 use App\Model\Exam\Question;
 use App\Model\Exam\QuestionDescription;
 use App\Model\Exam\QuestionDraft;
@@ -336,20 +337,25 @@ class QuestionController extends Controller
                 }else{ 
                    $match_answer_id=null;
                 }
-               if ($request->question_type==5) {
-                    $a[]=$match_answer_id;
+               if ($request->question_type==5) { 
                   $matchAnswer=MatchAnswer::firstOrNew(['id'=>$match_answer_id]);
                   $matchAnswer->question_id=$question->id;
                   $matchAnswer->option_left_side_id=$left_side_id; 
                   $matchAnswer->option_right_side_id=$optionRightSideArrId[$request->$correct_answer_right]; 
                   $matchAnswer->save(); 
-               }elseif($request->question_type==6){ 
-                  foreach ($request->$correct_answer_right as $right_key => $right_value) {
-                  $matchAnswer=MatchAnswer::firstOrNew(['id'=>$match_answer_id]);
-                  $matchAnswer->question_id=$question->id;
-                  $matchAnswer->option_left_side_id=$request->correct_answer_left[$key]; 
-                  $matchAnswer->option_right_side_id=$right_value; 
-                  $matchAnswer->save(); 
+               }elseif($request->question_type==6){  
+                  foreach ($request->$correct_answer_right as $right_key => $right_value) { 
+                    $rval=$optionRightSideArrId[$right_value]; 
+                      if (empty($match_answer_id)) {
+                         $matchAnswer=new MatchAnswer();
+                         $matchAnswer->question_id=$question->id;
+                         $matchAnswer->option_left_side_id=$left_side_id;
+                         $matchAnswer->option_right_side_id=$optionRightSideArrId[$right_value];  
+                         $matchAnswer->save();
+                      }else{
+                        
+                      }
+                       
                   }
                   
                }  
@@ -692,6 +698,67 @@ class QuestionController extends Controller
            return view('error.home'); 
         }
     }
+
+    public function paragraph()
+    {
+     try {
+        
+       $classes = $sections =MyFuncs::getAllClasses();
+       $manageSections =Section::where('status',1)->orderBy('subject_id','ASC')->orderBy('section_id','ASC')->get(); 
+       $subjects = SubjectType::orderBy('sorting_order_id','ASC')->get();  
+       $data=array(); 
+       $data['subjects']=$subjects;  
+       $data['manageSections']=$manageSections;  
+       $data['classes']=$classes;  
+       
+       return view('admin.exam.paragraph.list',$data);  
+      } catch (Exception $e) {
+        Log::error('QuestionController-index: '.$e->getMessage());       
+        return view('error.home'); 
+      }
+    } 
+
+    public function paragraphStore(Request $request)
+    {
+     try {
+         $rules=[
+          'class' => 'required',             
+          'subject' => 'required',  
+          'section' => 'required',  
+          'topic' => 'required',  
+          'code' => 'required|unique:paragraphs',  
+          'details' => 'required',  
+         ]; 
+         $validator = Validator::make($request->all(),$rules);
+         if ($validator->fails()) {
+             $errors = $validator->errors()->all();
+             $response=array();
+             $response["status"]=0;
+             $response["msg"]=$errors[0];
+             return response()->json($response);// response as json
+         }
+           
+            $Paragraph = new Paragraph(); 
+            $Paragraph->class_id = $request->class;  
+            $Paragraph->subject_id = $request->subject; 
+            $Paragraph->section_id = $request->section;
+            $Paragraph->topic_id = $request->topic;
+            $Paragraph->code = $request->code;
+            $Paragraph->no_of_question = $request->no_of_question;
+            $Paragraph->details = $request->details;
+            $Paragraph->status = 1; 
+            $Paragraph->save(); 
+
+         
+         $response['msg'] = 'Save Successfully';
+         $response['status'] = 1;
+         return response()->json($response); 
+       
+      } catch (Exception $e) {
+        Log::error('QuestionController-paragraphStore: '.$e->getMessage());       
+        return view('error.home'); 
+      }
+    }  
 
  
    

@@ -145,6 +145,72 @@
    </div>
 
    <div class="col-lg-12">
+     @if (!empty($question['id'])) 
+     @php
+     $left_char ='A';
+     $l=0;
+    
+       if (empty($question['id'])) {
+         if (!empty($question['options'])) {
+           $correct_answer_left=count($question['options']);
+         }else{
+           $correct_answer_left=count([0,1,2,3]);
+         }
+         
+       }elseif(!empty($question['id'])){  
+         $correct_answer_left=count($question['MatchAnswers']);
+       }else{
+         $correct_answer_left=count($question['correct_answer_left']);
+       } 
+     @endphp
+      
+     @php
+        $right_char ='P';
+        $k=0; 
+     @endphp
+     
+    <table class="table table-bordered no-margin" id="correct_table"> 
+      <tbody> 
+        @foreach ($question->OptionLeftSides as $key=>$OptionLeftSide) 
+           <tr class="tr_clone" id="{{ $l }}"> 
+               <td class="td_clone" id="td_clone_{{ $l }}">
+                 <input type="hidden" name="correct_answer_left[]" value="{{ $l }}">
+                 @if (!empty($question['id']))
+                    <input type="hidden" name="match_answer_id[]" value="{{ $question->MatchAnswers[$key]->id }}">
+                 @endif
+               {{ $left_char}}    
+               </td> 
+               @php
+                  $right_char ='P';
+                  $k=0; 
+                   // $right_side_id=$question['MatchAnswers'][$key]->option_right_side_id;
+                   $right_side_arr_id=App\Model\Exam\MatchAnswer::where('option_left_side_id',$OptionLeftSide->id)->pluck('option_right_side_id')->toArray();
+                   
+
+               @endphp
+               @foreach ($question->OptionRightSides as $key_right=>$OptionRightSide)
+
+                  <td class="td_clone" id="td_clone_{{ $key+1 }}"> 
+                    <input type="checkbox" id="correct_answer_right_{{ $key+1 }}[]" name="correct_answer_right_{{ $key+1 }}[]"   value="{{ $k+1 }}"  
+                       {{ in_array($OptionRightSide->id, $right_side_arr_id)?'checked':'' }} 
+                    >
+                   <label>{{ $right_char }}   </label>
+                  
+                 </td>
+                 @php
+                   $right_char++;
+                   $k++;
+                 @endphp
+               @endforeach 
+           </tr> 
+           @php
+               $left_char ++;
+           @endphp
+        @endforeach
+        
+      </tbody>
+    </table>
+    @else
    		<table class="table table-bordered no-margin" id="correct_table"> 
    			<tbody>
           @php
@@ -207,6 +273,7 @@
    				@endfor
    			</tbody>
    		</table>
+      @endif
    </div>
   
   

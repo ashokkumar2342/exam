@@ -2,7 +2,7 @@
 @php
 	$menu =str_replace(url('/'), '', url()->previous());
 @endphp
-@if ('/admin/question/add' == $menu || '/admin/question/show' == $menu )
+@if ('/admin/question/add' == $menu || '/admin/question/show' == $menu || '/admin/question/paragraph' == $menu )
 <div class="form-group">
   <label>Section</label>
  <select name="section" class="form-control" id="section" onchange="callAjax(this,'{{ route('admin.topic.select.box') }}'+'?subject='+$('#subject').val()+'&class='+$('#class').val()+'&topic_id={{ @$topic_id}}','topic_select_box')">
