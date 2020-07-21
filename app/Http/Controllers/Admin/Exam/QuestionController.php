@@ -144,11 +144,15 @@ class QuestionController extends Controller
           $questionTypes=$QuestionType->getQuestionType();
           $difficultyLevel =new DifficultyLevel();
           $difficultyLevels=$difficultyLevel->getDifficultyLevel();
+          $paragraph = new Paragraph(); 
+          $paragraphs=$paragraph->getResult();
           $data['questionTypes']=$questionTypes;  
           $data['subjects']=$subjects;  
           $data['manageSections']=$manageSections;  
           $data['classes']=$classes;  
           $data['difficultyLevels']=$difficultyLevels;  
+          $data['paragraphs']=$paragraphs;  
+          
           if (!empty($df)) { 
             $data['question']=  (array) json_decode($df->json); 
           }
@@ -233,9 +237,12 @@ class QuestionController extends Controller
            'title' => 'required',  
            'question' => 'required',  
           ]; 
-          if ($request->question_type != 7 && $request->question_type != 5 && $request->question_type != 6) {
+          if ($request->question_type != 7 && $request->question_type != 8 && $request->question_type != 5 && $request->question_type != 6) {
            $rules['correct_answer']='required';
            $rules['option.*']='required';
+          }
+          if ($request->question_type == 8) {
+           $rules['paragraph']='required'; 
           }
          
           $validator = Validator::make($request->all(),$rules);
@@ -253,7 +260,9 @@ class QuestionController extends Controller
           $question->title=$request->title; 
           $question->solution=$request->solution; 
           $question->video_url=$request->video_url; 
-          
+           if ($request->question_type == 8) {
+            $question->paragraph_id=$request->paragraph; 
+          }
           $question->created_by=Auth::guard('admin')->user()->id; 
           $question->save();  
           if (empty($id)) {
@@ -274,7 +283,7 @@ class QuestionController extends Controller
               'difficulty_level_id'=>$request->difficulty_level
             ]);  
           }
-          if ($request->question_type==7) {
+          if ($request->question_type==7 || $request->question_type==8) {
               $marking =Marking::firstOrNew(['question_id'=>$id]); 
               $marking->question_id =$question->id;
               $marking->marking =$request->marking;
@@ -538,6 +547,8 @@ class QuestionController extends Controller
               $ins['difficulty_level_id']=$request->difficulty_level;
               if ($request->question_type==7) {
                 
+              }elseif ($request->question_type==8) {
+                 $ins['paragraph_id']=$request->paragraph;
               }elseif ($request->question_type==5) {
                  $ins['options_right']=null; 
                  $ins['correct']=null;
@@ -622,7 +633,7 @@ class QuestionController extends Controller
                 return view('admin.exam.question.single_correct_matrix',$data)->render();
             }elseif($id==6){
                 return view('admin.exam.question.multiple_correct_matrix',$data)->render();
-            }elseif($id==7){
+            }elseif($id==7 || $id==8){
                 return view('admin.exam.question.subjective',$data)->render();
             }
              
@@ -712,6 +723,20 @@ class QuestionController extends Controller
        $data['classes']=$classes;  
        
        return view('admin.exam.paragraph.list',$data);  
+      } catch (Exception $e) {
+        Log::error('QuestionController-index: '.$e->getMessage());       
+        return view('error.home'); 
+      }
+    } 
+    public function paragraphSelect(Request $request)
+    {
+     try { 
+       $paragraph = new Paragraph(); 
+       $para=$paragraph->getResultByid($request->id);
+       $data=array();  
+       $data['para']=$para;  
+       
+       return view('admin.exam.question.class_subject_select',$data);  
       } catch (Exception $e) {
         Log::error('QuestionController-index: '.$e->getMessage());       
         return view('error.home'); 

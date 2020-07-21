@@ -11,7 +11,12 @@
      <input type="number" name="marking" style="width: 3em" value="{{ $option['marking'] }}"> 
  @else  
  <label style="padding-left:10px"> Marking</label>
- <input type="number" name="marking" style="width: 3em" value="{{ $question['marking'] }}">   
+ @if (count($question['marking']) > 1)
+ <input type="number" name="marking" style="width: 3em" value="{{ $question['marking'][0] }}">
+ @else 
+ <input type="number" name="marking" style="width: 3em" value="{{ $question['marking'] }}">
+ @endif
+    
   
 @endif  
   

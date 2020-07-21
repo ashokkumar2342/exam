@@ -256,7 +256,8 @@ Route::group(['middleware' => 'admin'], function() {
          	Route::post('topic-add','Exam\QuestionController@storeTopic')->name('admin.topic.add');  
 
          	Route::get('paragraph','Exam\QuestionController@paragraph')->name('admin.paragraph.list');  
-         	Route::post('paragraph-store','Exam\QuestionController@paragraphStore')->name('admin.paragraph.store');  
+         	Route::post('paragraph-store','Exam\QuestionController@paragraphStore')->name('admin.paragraph.store'); 
+         	Route::get('paragraph-select','Exam\QuestionController@paragraphSelect')->name('admin.paragraph.select');  
 
 
          	Route::get('verify','Exam\QuestionController@questionForm')->name('admin.question.verify');  
