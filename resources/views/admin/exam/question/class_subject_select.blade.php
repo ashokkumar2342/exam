@@ -1,6 +1,6 @@
  
 @if (empty($para))
-   <div class="col-md-3">
+<div class="col-md-3">
   <div class="form-group">
       {{ Form::label('class','Class',['class'=>' control-label']) }}  
       <select class="form-control"  multiselect-form="true"  name="class" id="class"> 

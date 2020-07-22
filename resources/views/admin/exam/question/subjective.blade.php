@@ -8,7 +8,7 @@
   </div> 
  @elseif(!empty($question['id']))   
      <label style="padding-left:10px"> Marking</label>
-     <input type="number" name="marking" style="width: 3em" value="{{ $option['marking'] }}"> 
+     <input type="number" name="marking" style="width: 3em" value="{{ $question['marking'] }}"> 
  @else  
  <label style="padding-left:10px"> Marking</label>
  @if (count($question['marking']) > 1)

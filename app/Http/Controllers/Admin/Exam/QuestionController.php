@@ -44,11 +44,14 @@ class QuestionController extends Controller
             $questionTypes=$QuestionType->getQuestionType();
             $difficultyLevel =new DifficultyLevel();
             $difficultyLevels=$difficultyLevel->getDifficultyLevel();
+            $paragraph = new Paragraph(); 
+            $paragraphs=$paragraph->getResult();
             $data['questionTypes']=$questionTypes;  
             $data['subjects']=$subjects;  
             $data['manageSections']=$manageSections;  
             $data['classes']=$classes;  
             $data['difficultyLevels']=$difficultyLevels;  
+            $data['paragraphs']=$paragraphs;  
             return view('admin.exam.report.show',$data); 
         } catch (Exception $e) {
             
@@ -87,7 +90,7 @@ class QuestionController extends Controller
            $data['questions']=$questions;
            $response=array();
            $response['status']=1;
-           $response['data']=view('admin.exam.report.question_table',$data)->render(); 
+           $response['data']=view('admin.exam.report.question_type_report_2',$data)->render(); 
            return  $response; 
         } catch (Exception $e) {
             
@@ -162,28 +165,28 @@ class QuestionController extends Controller
            return view('error.home'); 
         }
     }
-    public function questionEdit($id)
-    {
-        try {
-          $id =Crypt::decrypt($id);
-          $classes = $sections =MyFuncs::getAllClasses();
-          $manageSections =Section::where('status',1)->orderBy('subject_id','ASC')->orderBy('section_id','ASC')->get(); 
-          $subjects = SubjectType::orderBy('sorting_order_id','ASC')->get();  
-          $QuestionType =new QuestionType();
-          $questionTypes=$QuestionType->getQuestionType();
-          $difficultyLevel =new DifficultyLevel();
-          $difficultyLevels=$difficultyLevel->getDifficultyLevel();
-          $data['questionTypes']=$questionTypes;  
-          $data['subjects']=$subjects;  
-          $data['manageSections']=$manageSections;  
-          $data['classes']=$classes;  
-          $data['difficultyLevels']=$difficultyLevels;  
-          return view('admin.exam.question.edit_form',$data);  
-        } catch (Exception $e) {
-           Log::error('QuestionController-index: '.$e->getMessage());       
-           return view('error.home'); 
-        }
-    } 
+    // public function questionEdit($id)
+    // {
+    //     try {
+    //       $id =Crypt::decrypt($id);
+    //       $classes = $sections =MyFuncs::getAllClasses();
+    //       $manageSections =Section::where('status',1)->orderBy('subject_id','ASC')->orderBy('section_id','ASC')->get(); 
+    //       $subjects = SubjectType::orderBy('sorting_order_id','ASC')->get();  
+    //       $QuestionType =new QuestionType();
+    //       $questionTypes=$QuestionType->getQuestionType();
+    //       $difficultyLevel =new DifficultyLevel();
+    //       $difficultyLevels=$difficultyLevel->getDifficultyLevel();
+    //       $data['questionTypes']=$questionTypes;  
+    //       $data['subjects']=$subjects;  
+    //       $data['manageSections']=$manageSections;  
+    //       $data['classes']=$classes;  
+    //       $data['difficultyLevels']=$difficultyLevels;  
+    //       return view('admin.exam.question.edit_form',$data);  
+    //     } catch (Exception $e) {
+    //        Log::error('QuestionController-index: '.$e->getMessage());       
+    //        return view('error.home'); 
+    //     }
+    // } 
     public function questionEditShow(Request $request)
     {
         try {
@@ -208,12 +211,15 @@ class QuestionController extends Controller
           $questionTypes=$QuestionType->getQuestionType();
           $difficultyLevel =new DifficultyLevel();
           $difficultyLevels=$difficultyLevel->getDifficultyLevel();
+          $paragraph = new Paragraph(); 
+          $paragraphs=$paragraph->getResult();
           $data['questionTypes']=$questionTypes;  
           $data['subjects']=$subjects;  
           $data['manageSections']=$manageSections;  
           $data['classes']=$classes;  
           $data['difficultyLevels']=$difficultyLevels; 
           $data['question']=$question; 
+          $data['paragraphs']=$paragraphs; 
           $response=array();
           $response['status']=1;
           $response['data']=view('admin.exam.question.form_field',$data)->render(); 

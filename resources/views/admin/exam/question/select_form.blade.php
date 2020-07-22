@@ -13,7 +13,7 @@ if (empty($question['options'])){
 <div class="col-md-3">
   <div class="form-group" > 
       <label>Question Type</label>
-      <select name="question_type" button-click="" editor_question="{{ $value }}" editor_question_right="" id="question_type" class="form-control" onchange="questionTypeChange(this)"> 
+      <select name="question_type" button-click="" select-triger="" editor_question="{{ $value }}" editor_question_right="" id="question_type" class="form-control" onchange="questionTypeChange(this)"> 
         <option value="" selected disabled>Select Question Type</option>
         @foreach ($questionTypes  as $questionType)
            <option value="{{ $questionType->id }}" {{ @$question['question_type_id']==$questionType->id?'selected':'' }}>{{ $questionType->name }}</option>
@@ -26,7 +26,7 @@ if (empty($question['options'])){
   <div class="col-md-9">
    <div class="form-group">
     <label>Paragraph</label>
-   <select name="paragraph" id="paragraph" class="form-control" onchange="callAjax(this,'{{ route('admin.paragraph.select') }}','class_subjec_div');$('#class_subjec_div').show()">
+   <select name="paragraph" id="paragraph" class="form-control" onchange="callAjax(this,'{{ route('admin.paragraph.select') }}','paragraph_class_subjec_div');$('#paragraph_class_subjec_div').show()">
     <option value="" selected="" disabled>Select Paragraph</option> 
     @foreach ($paragraphs as $paragraph)
       <option value="{{ $paragraph->id }}" {{ @$question['paragraph_id']==$paragraph->id?'selected':'' }}>{{ $paragraph->details or '' }}</option> 
@@ -34,9 +34,13 @@ if (empty($question['options'])){
    </select>
   </div>
 </div>
+<div id="paragraph_class_subjec_div" style="display: none">
+  @include('admin.exam.question.all_select')
 </div>
+</div>
+
 <div id="class_subjec_div" style="display: none">
-  @include('admin.exam.question.class_subject_select')
+  @include('admin.exam.question.all_select')
 </div>
 
 <div class="col-md-3">
@@ -85,9 +89,16 @@ if (empty($question['options'])){
     
   }else if (obj.value==8) {
       if({{ $value }}==0){ 
+        @if (!empty(@$question['paragraph_id']))
+         $(obj).attr('select-triger','paragraph');
+        @endif 
         callAjax(obj,'{{ route('admin.question.type') }}'+'?id='+obj.value+'&question_id={{ @$question['id']}}','question_type_result')
       }else{
-        $('#paragraph_div').show();
+        $('#paragraph_div').show(); 
+        @if (!empty(@$question['paragraph_id']))
+          $(obj).attr('select-triger','paragraph');
+        @endif 
+       
         callAjax(obj,'{{ route('admin.question.type') }}'+'?id='+obj.value+'&question_id={{ @$question['id']}}','question_type_result')
       }
     
@@ -104,10 +115,15 @@ if (empty($question['options'])){
 
   if(obj.value==8){
      $('#paragraph_div').show();
-     $('#class_subjec_div').hide();
+     $('#class_subjec_div').hide(); 
+     $('.disabled_item').attr('disabled', 'disabled');
   }else{
-    $('#paragraph_div').hide();
     $('#class_subjec_div').show();
+    $('.disabled_item').removeAttr('disabled');
+    $('#paragraph_div').hide();
+
+    
+    console.log('d')
   }
      
   }
