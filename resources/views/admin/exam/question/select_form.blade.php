@@ -121,6 +121,7 @@ if (empty($question['options'])){
     $('#class_subjec_div').show();
     $('.disabled_item').removeAttr('disabled');
     $('#paragraph_div').hide();
+    $('#paragraph_class_subjec_div').html('');
 
     
     console.log('d')

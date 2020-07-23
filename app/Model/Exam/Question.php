@@ -14,14 +14,17 @@ class Question extends Model
     function getResult($arr){
     	try {
     		 $query=$this->join('question_descriptions', 'question_descriptions.question_id', '=', 'questions.id')
-                    ->join('class_types', 'class_types.id', '=', 'question_descriptions.class_id') 
-                    ->join('subject_types', 'subject_types.id', '=', 'question_descriptions.subject_id')
-                    ->join('section_types', 'section_types.id', '=', 'question_descriptions.section_id') 
-                    ->join('topics', 'topics.id', '=', 'question_descriptions.topic_id') 
-                    ->join('difficulty_levels', 'difficulty_levels.id', '=', 'question_descriptions.difficulty_level_id') 
+                    ->leftjoin('question_types', 'question_types.id', '=', 'questions.question_type_id')
+                    ->leftjoin('class_types', 'class_types.id', '=', 'question_descriptions.class_id') 
+                    ->leftjoin('subject_types', 'subject_types.id', '=', 'question_descriptions.subject_id')
+                    ->leftjoin('section_types', 'section_types.id', '=', 'question_descriptions.section_id') 
+                    ->leftjoin('topics', 'topics.id', '=', 'question_descriptions.topic_id') 
+                    ->leftjoin('difficulty_levels', 'difficulty_levels.id', '=', 'question_descriptions.difficulty_level_id') 
+                    ->leftjoin('marking_scores', 'marking_scores.question_id', '=', 'questions.id') 
+                    ->leftjoin('markings', 'markings.question_id', '=', 'questions.id')
                      
                     ->with('options')
-                    ->selectRaw('questions.*,question_descriptions.id as question_description_id,question_descriptions.question_id,question_descriptions.class_id,question_descriptions.subject_id,question_descriptions.section_id,question_descriptions.topic_id,question_descriptions.difficulty_level_id,class_types.name as class_name,subject_types.name as subject_name,section_types.name as section_name,topics.name as topic_name,difficulty_levels.name as level_name')
+                    ->selectRaw('questions.*,question_descriptions.id as question_description_id,question_descriptions.question_id,question_descriptions.class_id,question_descriptions.subject_id,question_descriptions.section_id,question_descriptions.topic_id,question_descriptions.difficulty_level_id,class_types.name as class_name,subject_types.name as subject_name,section_types.name as section_name,topics.name as topic_name,difficulty_levels.name as difficulty_level,question_types.name as question_type,marking_scores.correct,marking_scores.wrong,markings.marking')
                     ->whereBetween('questions.created_at',[$arr['from_date'],$arr['to_date']]);
                     if(isset($arr['status'])){
                      $query->where('questions.status',$arr['status']); 
