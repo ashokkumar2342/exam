@@ -78,7 +78,7 @@ class Question extends Model
     function getQuestionById($id){
     	try {
     		return  $query=$this->join('question_descriptions', 'question_descriptions.question_id', '=', 'questions.id')
-            ->join('markings', 'markings.question_id', '=', 'questions.id') 
+            ->leftjoin('markings', 'markings.question_id', '=', 'questions.id') 
 				->where('questions.id',$id)
 				->with('options')
                 ->selectRaw('questions.*,question_descriptions.id as question_description_id,question_descriptions.question_id,question_descriptions.class_id,question_descriptions.subject_id,question_descriptions.section_id,question_descriptions.topic_id,question_descriptions.difficulty_level_id,markings.marking')
@@ -90,7 +90,7 @@ class Question extends Model
     function getQuestionMatricById($id){
         try {
             return  $query=$this->join('question_descriptions', 'question_descriptions.question_id', '=', 'questions.id')
-                ->join('marking_scores', 'marking_scores.question_id', '=', 'questions.id') 
+                ->leftjoin('marking_scores', 'marking_scores.question_id', '=', 'questions.id') 
                 ->where('questions.id',$id)
                 ->with('OptionLeftSides')
                 ->with('OptionRightSides')

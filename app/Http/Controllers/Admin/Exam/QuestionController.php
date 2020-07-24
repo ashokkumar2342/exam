@@ -165,28 +165,7 @@ class QuestionController extends Controller
            return view('error.home'); 
         }
     }
-    // public function questionEdit($id)
-    // {
-    //     try {
-    //       $id =Crypt::decrypt($id);
-    //       $classes = $sections =MyFuncs::getAllClasses();
-    //       $manageSections =Section::where('status',1)->orderBy('subject_id','ASC')->orderBy('section_id','ASC')->get(); 
-    //       $subjects = SubjectType::orderBy('sorting_order_id','ASC')->get();  
-    //       $QuestionType =new QuestionType();
-    //       $questionTypes=$QuestionType->getQuestionType();
-    //       $difficultyLevel =new DifficultyLevel();
-    //       $difficultyLevels=$difficultyLevel->getDifficultyLevel();
-    //       $data['questionTypes']=$questionTypes;  
-    //       $data['subjects']=$subjects;  
-    //       $data['manageSections']=$manageSections;  
-    //       $data['classes']=$classes;  
-    //       $data['difficultyLevels']=$difficultyLevels;  
-    //       return view('admin.exam.question.edit_form',$data);  
-    //     } catch (Exception $e) {
-    //        Log::error('QuestionController-index: '.$e->getMessage());       
-    //        return view('error.home'); 
-    //     }
-    // } 
+   
     public function questionEditShow(Request $request)
     {
         try {
@@ -344,6 +323,7 @@ class QuestionController extends Controller
              
             }  
             $increamentid=0; 
+            $update_arr_id =array();
             foreach ($optionLeftSideArrId as $key => $left_side_id) {
                 $newid=$increamentid+1;
                 $correct_answer_right = 'correct_answer_right_'.$newid; 
@@ -368,13 +348,31 @@ class QuestionController extends Controller
                          $matchAnswer->option_right_side_id=$optionRightSideArrId[$right_value];  
                          $matchAnswer->save();
                       }else{
-                        
+
+                        $matchAnswer=MatchAnswer::where('option_left_side_id', '=', $left_side_id)->where('option_right_side_id', '=', $optionRightSideArrId[$right_value])->where('question_id', '=', $question->id)->first();
+                        if ($matchAnswer!=null) { 
+                            $matchAnswer->question_id=$question->id;
+                            $matchAnswer->option_left_side_id=$left_side_id;
+                            $matchAnswer->option_right_side_id=$optionRightSideArrId[$right_value];  
+                            $matchAnswer->save(); 
+                            $update_arr_id[] =$matchAnswer->id;
+                        }else{
+                           $matchAnswer=new MatchAnswer();
+                           $matchAnswer->question_id=$question->id;
+                           $matchAnswer->option_left_side_id=$left_side_id;
+                           $matchAnswer->option_right_side_id=$optionRightSideArrId[$right_value];  
+                           $matchAnswer->save();   
+                           $update_arr_id[] =$matchAnswer->id;
+                        }
+
+                         
                       }
                        
                   }
                   
                }  
                $increamentid++;
+
             }
             
             
@@ -408,9 +406,9 @@ class QuestionController extends Controller
             }
           }
             
-            
-             
-          $this->questionDraftUpdate($request);
+          $MatchAnswer =new MatchAnswer(); 
+          $MatchAnswer->matchAnswerDelete($question->id,$update_arr_id);   
+          $this->questionDraftUpdate($request); 
           $response=array();  
           $response['status']=1;  
           $response['msg']='Save Successfully';  
@@ -789,7 +787,30 @@ class QuestionController extends Controller
         Log::error('QuestionController-paragraphStore: '.$e->getMessage());       
         return view('error.home'); 
       }
-    }  
+    } 
+
+    // public function questionEdit($id)
+    // {
+    //     try {
+    //       $id =Crypt::decrypt($id);
+    //       $classes = $sections =MyFuncs::getAllClasses();
+    //       $manageSections =Section::where('status',1)->orderBy('subject_id','ASC')->orderBy('section_id','ASC')->get(); 
+    //       $subjects = SubjectType::orderBy('sorting_order_id','ASC')->get();  
+    //       $QuestionType =new QuestionType();
+    //       $questionTypes=$QuestionType->getQuestionType();
+    //       $difficultyLevel =new DifficultyLevel();
+    //       $difficultyLevels=$difficultyLevel->getDifficultyLevel();
+    //       $data['questionTypes']=$questionTypes;  
+    //       $data['subjects']=$subjects;  
+    //       $data['manageSections']=$manageSections;  
+    //       $data['classes']=$classes;  
+    //       $data['difficultyLevels']=$difficultyLevels;  
+    //       return view('admin.exam.question.edit_form',$data);  
+    //     } catch (Exception $e) {
+    //        Log::error('QuestionController-index: '.$e->getMessage());       
+    //        return view('error.home'); 
+    //     }
+    // }  
 
  
    
