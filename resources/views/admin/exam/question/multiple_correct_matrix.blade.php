@@ -35,10 +35,11 @@
    		     @endphp
    		     @endforeach
    		   </div> 
-   		  @elseif(!empty($question['id']))
+   		  @elseif(!empty($question['id'])) 
    		  <div class="input_fields_wrap">  
    		   @foreach ($question['optionLeftSides'] as $key=>$option) 
-   		          <div id="div_{{ $key+1 }}">  
+   		          <div id="div_{{ $key+1 }}">    
+            
                   <input type="hidden" id="otion_id" name="option_id[]" value="{{ $option['id'] }}"> 
    		           <label> {{ $char }}. </label> 
    		           <div> <textarea class="ckeditor" id="option_{{ $key+1 }}" name="option[]">{{ $option['description'] }}</textarea></div>
@@ -294,9 +295,9 @@
              var div_x = 'div_' +x;
              $(wrapper).append('<div id="'+div_x+'">    <label> '+String.fromCharCode(64 + x)+'. </label> <textarea id="'+editorId+'" class="ckeditor" name="option[]"></textarea></div></br>'); //add input box 
             
-             $('#correct_table').append('<tr class="tr_clone" id="tr_clone_'+x+'">  <td class="td_clone" id="td_clone_'+x+'">'+String.fromCharCode(64 + x)+'<input type="hidden" name="correct_answer_left[]" value="'+x+'"></td><td class="td_clone" id="td_clone_'+x+'"><input type="radio" id="correct_answer_right_'+x+'" name="correct_answer_right_'+x+'" value="1"><label> '+String.fromCharCode(80)+'<label></td><td class="td_clone" id="td_clone_'+x+'"><input type="radio" id="correct_answer_right_'+x+'" name="correct_answer_right_'+x+'" value="2"><label> '+String.fromCharCode(81)+'<label></td><td class="td_clone" id="td_clone_'+x+'"><input type="radio" id="correct_answer_right_'+x+'" name="correct_answer_right_'+x+'" value="3"><label> '+String.fromCharCode(82)+'<label></td><td class="td_clone" id="td_clone_'+x+'"><input type="radio" id="correct_answer_right_'+x+'" name="correct_answer_right_'+x+'" value="4"><label> '+String.fromCharCode(83)+'<label></td></tr>'); //add input box 
+             $('#correct_table').append('<tr class="tr_clone" id="tr_clone_'+x+'">  <td class="td_clone" id="td_clone_'+x+'">'+String.fromCharCode(64 + x)+'<input type="hidden" name="correct_answer_left[]" value="'+x+'"></td><td class="td_clone" id="td_clone_'+x+'"><input type="checkbox" id="correct_answer_right_'+x+'[]" name="correct_answer_right_'+x+'[]" value="1"><label> '+String.fromCharCode(80)+'<label></td><td class="td_clone" id="td_clone_'+x+'"><input type="checkbox" id="correct_answer_right_'+x+'[]" name="correct_answer_right_'+x+'[]" value="2"><label> '+String.fromCharCode(81)+'<label></td><td class="td_clone" id="td_clone_'+x+'"><input type="checkbox" id="correct_answer_right_'+x+'[]" name="correct_answer_right_'+x+'[]" value="3"><label> '+String.fromCharCode(82)+'<label></td><td class="td_clone" id="td_clone_'+x+'"><input type="checkbox" id="correct_answer_right_'+x+'[]" name="correct_answer_right_'+x+'[]" value="4"><label> '+String.fromCharCode(83)+'<label></td></tr>'); //add input box 
 
-             $('.tr_clone').append('<td class="td_clone" id="td_clone_'+x+'"><input type="radio" id="correct_answer_right_'+x+'" name="correct_answer_right_5" value="5"><label> '+String.fromCharCode(79 + x)+'<label></td>'); //add input box           
+             $('.tr_clone').append('<td class="td_clone" id="td_clone_'+x+'"><input type="checkbox" id="correct_answer_right_'+x+'[]" name="correct_answer_right_5[]" value="5"><label> '+String.fromCharCode(79 + x)+'<label></td>'); //add input box           
               
              CKEDITOR.config.toolbar_Full =
                  [

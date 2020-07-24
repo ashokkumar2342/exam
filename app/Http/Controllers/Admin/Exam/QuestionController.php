@@ -405,9 +405,10 @@ class QuestionController extends Controller
               $option->save();
             }
           }
-            
+          if (!empty($id)) {  
           $MatchAnswer =new MatchAnswer(); 
           $MatchAnswer->matchAnswerDelete($question->id,$update_arr_id);   
+          }
           $this->questionDraftUpdate($request); 
           $response=array();  
           $response['status']=1;  
