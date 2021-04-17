@@ -17,17 +17,17 @@
             </p>
             <table> 
                 <tr>
-                  <td><p><b>T. &nbsp;</b></p> </td>
+                  <td style="vertical-align:top"><p><b>T. &nbsp;</b></p> </td>
                   <td><p>{!! $question->title !!}</p></td>
                   <td></td> 
                 </tr>
                 <tr>
-                  <td><p><b>Q. &nbsp;</b></p> </td>
+                  <td style="vertical-align:top"><b>Q. &nbsp;</b>  </td>
                   <td>{!! $question->details !!}</td>
                   <td></td> 
                 </tr> 
                 <tr>
-                  <td><p><b>S. &nbsp;</b></p> </td>
+                  <td style="vertical-align:top"><p><b>S. &nbsp;</b></p> </td>
                   <td>{!! $question->solution !!}</td>
                   <td></td> 
                 </tr> 
