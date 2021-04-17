@@ -238,6 +238,7 @@ class QuestionController extends Controller
               $response["msg"]=$errors[0];
               return response()->json($response);// response as json
           }
+          $update_arr_id =array();
           $question =Question::firstOrNew(['id'=>$id]); 
           $question->question_type_id=$request->question_type; 
           
@@ -322,8 +323,7 @@ class QuestionController extends Controller
              // }
              
             }  
-            $increamentid=0; 
-            $update_arr_id =array();
+            $increamentid=0;  
             foreach ($optionLeftSideArrId as $key => $left_side_id) {
                 $newid=$increamentid+1;
                 $correct_answer_right = 'correct_answer_right_'.$newid; 
